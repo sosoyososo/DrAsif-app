@@ -945,6 +945,7 @@ function HomeTab({ plan, gender, setGender, streakDays, setStreakDays }) {
         background: `linear-gradient(135deg, #0F2D4A 0%, #1A4A6E 60%, #1A7A6E 100%)`,
         margin: "0 -16px", padding: "36px 22px 28px",
         marginBottom: 16,
+        paddingTop: "calc(36px + env(safe-area-inset-top))",
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
@@ -1377,7 +1378,7 @@ function ChallengeTab({ plan, gender, foodLog, exLog, phase, setPhase, startDate
       )}
 
       {/* Header */}
-      <div style={{ background: `linear-gradient(160deg,${cfg.color},#0F2D4A)`, margin: "0 -18px", padding: "28px 24px 24px", marginBottom: 18 }}>
+      <div style={{ background: `linear-gradient(160deg,${cfg.color},#0F2D4A)`, margin: "0 -18px", padding: "28px 24px 24px", marginBottom: 18, paddingTop: "calc(28px + env(safe-area-inset-top))" }}>
         <div style={{ marginBottom: 14 }}><LogoFull dark={true} /></div>
         <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 10, fontFamily: "'DM Sans',sans-serif", letterSpacing: 2.5, textTransform: "uppercase", margin: "0 0 4px" }}>{cfg.chapter}</p>
         <h1 style={{ color: "#fff", fontSize: 28, fontFamily: "'Cormorant Garamond',serif", fontWeight: 700, margin: "0 0 4px" }}>{cfg.emoji} {cfg.label}</h1>
@@ -3265,6 +3266,7 @@ function MindTab({ gender }) {
       <div style={{
         background: `linear-gradient(135deg, #3D2A5E, #6B4C8A 60%, #9B7AB8)`,
         padding: "28px 20px 24px", marginBottom: 0,
+        paddingTop: "calc(28px + env(safe-area-inset-top))",
       }}>
         <div style={{ marginBottom: 16 }}><LogoFull dark={true} /></div>
         <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: "0 0 6px", letterSpacing: 1.5, textTransform: "uppercase" }}>Chapter 5 & 9</p>
