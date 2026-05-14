@@ -1,0 +1,86 @@
+<h2>当前应用的安全区域问题</h2>
+<p class="subtitle">在 iOS（刘海屏）和 Android 设备上，固定定位的底部导航和内容区域可能与系统 UI 重叠</p>
+
+<div class="mockup" style="max-width:320px;margin:0 auto">
+  <div class="mockup-header">当前布局（有问题的区域已高亮）</div>
+  <div class="mockup-body" style="position:relative;min-height:500px">
+    <!-- 状态栏区域 -->
+    <div style="height:44px;background:#0F2D4A;color:white;display:flex;align-items:center;padding:0 12px;font-size:12px">
+      <span>9:41</span>
+      <span style="margin-left:auto">📶 🔋</span>
+    </div>
+
+    <!-- 标题栏 -->
+    <div style="height:50px;background:white;border-bottom:1px solid #E2EAF0;display:flex;align-items:center;padding:0 14px;font-size:14px;font-weight:600;color:#0F2D4A">
+      ⚙ 设置按钮重叠区域 ⚠️
+    </div>
+
+    <!-- 内容区域 -->
+    <div style="height:250px;background:#F4F6F9;padding:16px;color:#4A6680;font-size:12px">
+      <div style="background:white;border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.06);margin-bottom:10px">
+        主内容区域
+      </div>
+      <div style="background:white;border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.06)">
+        使用 <code>calc(100vh - 72px)</code>，但未考虑安全区域
+      </div>
+    </div>
+
+    <!-- 底部导航 - 当前问题区域 -->
+    <div style="background:#FEE2E2;padding:4px;position:relative">
+      <div style="background:white;border-radius:12px 12px 0 0;padding:10px 8px 6px">
+        <div style="display:flex;justify-content:space-around;font-size:10px;color:#4A6680">
+          <span>🌿 Home</span>
+          <span>🏆 Challenge</span>
+          <span>🍽 Calories</span>
+          <span>✨ Coach</span>
+          <span>📖 Learn</span>
+        </div>
+      </div>
+      <div style="text-align:center;background:#FEE2E2;color:#DC2626;font-size:11px;font-weight:600;padding:4px 0 10px">
+        ⚠️ 底部导航与 Home Indicator 重叠！
+        <div style="font-weight:400;color:#9CA3AF;font-size:10px;margin-top:2px">
+          bottom: 0, padding: "6px 0 16px" 未考虑安全区域
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top:20px"><strong>目前的问题：</strong></p>
+<ul style="text-align:left;font-size:13px;line-height:1.6">
+  <li><strong>底部导航</strong> — 固定在 <code>bottom: 0</code>，底部 padding 固定为 16px，未使用 <code>env(safe-area-inset-bottom)</code></li>
+  <li><strong>主内容区域</strong> — <code>height: calc(100vh - 72px)</code> 未加上底部安全区域高度</li>
+  <li><strong>设置按钮</strong> — 固定在 <code>top: 14, right: 14</code>，未考虑顶部安全区域（刘海）</li>
+  <li><strong>更多抽屉</strong> — 固定在 <code>bottom: 72</code>，未考虑底部安全区域</li>
+  <li><strong>启动画面/引导页</strong> — 使用 <code>minHeight: 100vh</code>，可能被状态栏遮挡</li>
+</ul>
+
+<div class="section">
+  <h3>你希望如何处理这些区域？</h3>
+  <p class="subtitle">选择需要修复的区域</p>
+  <div class="options" data-multiselect>
+    <div class="option" data-choice="all" onclick="toggleSelect(this)">
+      <div class="letter">1</div>
+      <div class="content">
+        <h3>全部修复</h3>
+        <p>底部导航、内容区域、设置按钮、抽屉、启动画面全部应用安全区域</p>
+      </div>
+    </div>
+    <div class="option" data-choice="bottom-only" onclick="toggleSelect(this)">
+      <div class="letter">2</div>
+      <div class="content">
+        <h3>仅底部导航</h3>
+        <p>主要问题是底部 Home Indicator 遮挡，先处理底部导航栏</p>
+      </div>
+    </div>
+    <div class="option" data-choice="top-bottom" onclick="toggleSelect(this)">
+      <div class="letter">3</div>
+      <div class="content">
+        <h3>顶部 + 底部都处理</h3>
+        <p>处理底部导航和顶部状态栏区域，抽屉和其他页面暂时不动</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p><strong>注：</strong>点击选择后告诉我你的选择，或者直接在终端告诉我。</p>

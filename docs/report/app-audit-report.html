@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lose Weight Smarter App — Full Readiness Report</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    :root {
+      --navy:    #0F2D4A;
+      --navyMid:#1A4A6E;
+      --teal:   #1A7A6E;
+      --tealL:  #22A090;
+      --gold:   #B8860B;
+      --goldL:  #E8D5A0;
+      --sage:   #2E7D57;
+      --mid:    #4A6680;
+      --light:  #8AA4BA;
+      --bg:     #F4F6F9;
+      --surface:#FFFFFF;
+      --border: #E2EAF0;
+      --critical: #C0392B;
+      --high:     #D35400;
+      --medium:   #B8860B;
+      --low:      #2E7D57;
+      --font: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--navy);
+      line-height: 1.6;
+    }
+
+    /* ─── Cover ─── */
+    .cover {
+      background: linear-gradient(160deg, #0F2D4A 0%, #1A4A6E 45%, #1A7A6E 100%);
+      color: #fff;
+      padding: 80px 24px 60px;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .cover-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      padding: 8px 20px;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      color: rgba(255,255,255,0.6);
+    }
+    .cover h1 {
+      font-family: var(--serif);
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    .cover-sub {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 40px;
+      max-width: 520px;
+    }
+    .cover-meta {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+    }
+    .cover-meta span { display: flex; align-items: center; gap: 6px; }
+
+    /* ─── Nav ─── */
+    .toc {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(15,45,74,0.04);
+    }
+    .toc-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .toc-inner a {
+      font-size: 0.78rem;
+      color: var(--mid);
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+      transition: all 0.15s;
+      font-weight: 500;
+    }
+    .toc-inner a:hover {
+      background: var(--navy);
+      color: #fff;
+      border-color: var(--navy);
+    }
+
+    /* ─── Container ─── */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    section {
+      padding: 56px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    section:last-of-type { border-bottom: none; }
+    section:target { scroll-margin-top: 80px; }
+
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--light);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+    .section-desc {
+      color: var(--mid);
+      font-size: 0.95rem;
+      margin-bottom: 30px;
+      max-width: 600px;
+      line-height: 1.7;
+    }
+
+    /* ─── Summary Cards ─── */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .summary-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 16px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(15,45,74,0.04);
+    }
+    .summary-card .num {
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: var(--serif);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .summary-card .num.critical { color: var(--critical); }
+    .summary-card .num.high     { color: var(--high); }
+    .summary-card .num.medium   { color: var(--medium); }
+    .summary-card .num.low      { color: var(--low); }
+    .summary-card .num.neutral  { color: var(--mid); }
+    .summary-card .label {
+      font-size: 0.72rem;
+      color: var(--light);
+      font-weight: 500;
+    }
+
+    /* ─── Overall Status ─── */
+    .overall-status {
+      background: #FFF3CD;
+      border: 1px solid #FFEAA7;
+      border-radius: 14px;
+      padding: 20px 22px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+    .overall-status .icon { font-size: 1.5rem; flex-shrink: 0; }
+    .overall-status h3 { font-size: 1rem; color: #856404; margin-bottom: 4px; }
+    .overall-status p { font-size: 0.85rem; color: #856404cc; line-height: 1.6; margin: 0; }
+
+    .overall-status.green  { background: #EAF5EE; border-color: #A8D5BE; }
+    .overall-status.green h3 { color: var(--sage); }
+    .overall-status.green p { color: #2E7D57cc; }
+
+    /* ─── Item Cards ─── */
+    .item-list { display: flex; flex-direction: column; gap: 14px; }
+    .item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 22px;
+      box-shadow: 0 2px 10px rgba(15,45,74,0.04);
+      transition: box-shadow 0.2s;
+    }
+    .item:hover { box-shadow: 0 4px 20px rgba(15,45,74,0.08); }
+
+    .item-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+    .item-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+    .item-icon.critical { background: #FDECEA; }
+    .item-icon.high     { background: #FDF2E9; }
+    .item-icon.medium   { background: #FEF8E7; }
+    .item-icon.low      { background: #EAF5EE; }
+
+    .item-title-area { flex: 1; }
+    .item-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 1px;
+    }
+    .item-sub {
+      font-size: 0.78rem;
+      color: var(--light);
+      font-weight: 400;
+    }
+    .item-tag {
+      display: inline-block;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 2px 10px;
+      border-radius: 50px;
+      margin-left: 8px;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .item-tag.critical { background: #FDECEA; color: var(--critical); }
+    .item-tag.high     { background: #FDF2E9; color: var(--high); }
+    .item-tag.medium   { background: #FEF8E7; color: var(--medium); }
+    .item-tag.low      { background: #EAF5EE; color: var(--low); }
+
+    .item-content { padding-left: 52px; }
+    .item p {
+      font-size: 0.88rem;
+      color: var(--mid);
+      line-height: 1.7;
+      margin-bottom: 6px;
+    }
+
+    .item-consequence {
+      background: #FDECEA;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      color: var(--critical);
+      margin-top: 6px;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .item-consequence.high   { background: #FDF2E9; color: var(--high); }
+    .item-consequence.medium { background: #FEF8E7; color: var(--medium); }
+    .item-consequence.low    { background: #EAF5EE; color: var(--low); }
+    .item-consequence .icon { flex-shrink: 0; font-size: 1rem; }
+
+    /* ─── Checklist mini ─── */
+    .checklist { margin: 8px 0 0 0; padding: 0; list-style: none; }
+    .checklist li {
+      font-size: 0.85rem;
+      color: var(--mid);
+      padding: 4px 0;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .checklist li .cb { flex-shrink: 0; font-size: 0.85rem; color: var(--light); }
+
+    /* ─── Priority phases ─── */
+    .priority-phase {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 10px rgba(15,45,74,0.04);
+    }
+    .priority-phase .phase-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+    .priority-phase .phase-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 2px 10px;
+      border-radius: 50px;
+      white-space: nowrap;
+    }
+    .phase-badge.p0 { background: #FDECEA; color: var(--critical); }
+    .phase-badge.p1 { background: #FDF2E9; color: var(--high); }
+    .phase-badge.p2 { background: #FEF8E7; color: var(--medium); }
+    .phase-badge.p3 { background: #EAF5EE; color: var(--low); }
+
+    .priority-phase h3 {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      color: var(--navy);
+    }
+    .priority-phase .phase-desc {
+      font-size: 0.82rem;
+      color: var(--light);
+      margin-bottom: 12px;
+    }
+    .priority-phase ul { list-style: none; padding: 0; }
+    .priority-phase li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+      color: var(--mid);
+    }
+    .priority-phase li:last-child { border-bottom: none; }
+    .priority-phase li .bullet {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 1px;
+    }
+    .bullet.p0 { background: var(--critical); }
+    .bullet.p1 { background: var(--high); }
+    .bullet.p2 { background: var(--medium); }
+    .bullet.p3 { background: var(--low); }
+
+    /* ─── Highlight box ─── */
+    .highlight-box {
+      background: #EAF5EE;
+      border: 1px solid #A8D5BE;
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-top: 24px;
+    }
+    .highlight-box h4 {
+      color: var(--sage);
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+    .highlight-box p {
+      font-size: 0.85rem;
+      color: var(--mid);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ─── Big table for store assets ─── */
+    .asset-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+    }
+    .asset-table th {
+      text-align: left;
+      padding: 10px 12px;
+      font-size: 0.72rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--light);
+      font-weight: 700;
+      border-bottom: 2px solid var(--border);
+    }
+    .asset-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--mid);
+      vertical-align: top;
+    }
+    .asset-table tr:last-child td { border-bottom: none; }
+    .asset-table td:first-child {
+      font-weight: 600;
+      color: var(--navy);
+      white-space: nowrap;
+      width: 30%;
+    }
+    .asset-table td:nth-child(2) { width: 30%; }
+    .asset-table td:last-child { width: 40%; }
+    .asset-table .tag-sm {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      padding: 1px 8px;
+      border-radius: 50px;
+      white-space: nowrap;
+    }
+    .tag-sm.apple { background: #E8E8E8; color: #333; }
+    .tag-sm.play  { background: #E8F5E9; color: #2E7D57; }
+    .tag-sm.both  { background: #E3F2FD; color: #1565C0; }
+
+    /* ─── Footer ─── */
+    .page-footer {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--light);
+      font-size: 0.8rem;
+    }
+    .page-footer hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin-bottom: 20px;
+      max-width: 200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    @media (max-width: 600px) {
+      .cover h1 { font-size: 2rem; }
+      .section-title { font-size: 1.5rem; }
+      .item { padding: 16px; }
+      .item-content { padding-left: 0; margin-top: 6px; }
+      .item-header { flex-wrap: wrap; }
+      .summary-grid { grid-template-columns: repeat(2, 1fr); }
+      .asset-table, .asset-table thead, .asset-table tbody, .asset-table th, .asset-table td, .asset-table tr { display: block; }
+      .asset-table thead { display: none; }
+      .asset-table tr { margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+      .asset-table td:first-child { font-weight: 700; width: 100%; padding-bottom: 2px; }
+      .asset-table td { width: 100% !important; padding: 4px 0; border: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ COVER ═══════════════ -->
+<header class="cover">
+  <div class="cover-badge">CONFIDENTIAL &middot; COMPLETE READINESS AUDIT</div>
+  <h1>App Readiness Report</h1>
+  <p class="cover-sub">
+    Everything needed to take "Lose Weight Smarter" from a visual prototype
+    to a published, working app on the Apple App Store and Google Play Store.
+  </p>
+  <div class="cover-meta">
+    <span>📅 May 2026</span>
+    <span>📱 Lose Weight Smarter — Dr. Asif</span>
+    <span>🔖 v2.0.0 (build 19)</span>
+  </div>
+</header>
+
+<!-- ═══════════════ TABLE OF CONTENTS ═══════════════ -->
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#summary">Executive Summary</a>
+    <a href="#backend">1. Missing Backend</a>
+    <a href="#compliance">2. Store Compliance</a>
+    <a href="#assets">3. Submission Assets</a>
+    <a href="#accounts">4. Developer Accounts</a>
+    <a href="#plan">5. Action Plan</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ EXECUTIVE SUMMARY ═══════════════ -->
+<section id="summary">
+  <div class="container">
+    <div class="section-label">Executive Summary</div>
+    <h2 class="section-title">The app looks complete — but it is not ready to ship</h2>
+
+    <div class="overall-status">
+      <div class="icon">⚠️</div>
+      <div>
+        <h3>Not ready for release</h3>
+        <p>
+          The screens, navigation, and features are all built. But the app currently has
+          <strong>no server</strong> behind it — all data lives only on the user's phone. Several
+          headline features (AI Coach, food scanner) are broken. Apple and Google would
+          reject the current version for missing legal and technical requirements.
+        </p>
+      </div>
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="num critical">8</div>
+        <div class="label">Critical Issues<br>(blocks release)</div>
+      </div>
+      <div class="summary-card">
+        <div class="num high">5</div>
+        <div class="label">High Priority<br>(must fix soon)</div>
+      </div>
+      <div class="summary-card">
+        <div class="num medium">11</div>
+        <div class="label">Medium Priority<br>(should fix)</div>
+      </div>
+      <div class="summary-card">
+        <div class="num low">4</div>
+        <div class="label">Low Priority<br>(nice to have)</div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <h4>💡 One-Sentence Summary</h4>
+      <p>
+        You need to <strong>build a backend server</strong> (accounts, data backup, AI proxy, content
+        moderation), <strong>prepare store submission assets</strong> (name, icon, screenshots, description,
+        privacy policy, website), <strong>fix compliance issues</strong> (camera permissions, testimonials,
+        medical cross), <strong>integrate RevenueCat</strong> for payments, and <strong>register developer
+        accounts</strong> with Apple and Google. Estimated timeline: <strong>6–12 weeks</strong>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PART 1: MISSING BACKEND ═══════════════ -->
+<section id="backend">
+  <div class="container">
+    <div class="section-label">Part 1 of 5</div>
+    <h2 class="section-title">Missing Backend Services</h2>
+    <p class="section-desc">
+      The app has <strong>no server</strong>. Everything runs on the user's phone with no data
+      leaving the device — which means several features cannot actually work.
+    </p>
+
+    <div class="item-list">
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon critical">🔐</div>
+          <div class="item-title-area">
+            <div class="item-title">User Accounts &amp; Login</div>
+            <div class="item-sub">Users cannot create an account or sign in</div>
+          </div>
+          <span class="item-tag critical">Critical</span>
+        </div>
+        <div class="item-content">
+          <p>The app has no concept of who a user is. There is no sign-up, no sign-in, no password, no email verification.</p>
+          <div class="item-consequence">
+            <span class="icon">🚫</span>
+            <span><strong>What happens:</strong> If a user gets a new phone, deletes the app, or clears their data — <strong>all progress, weight history, food logs, journals, and challenge data are gone forever</strong>. No recovery. No backup. No way to get it back.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon critical">☁️</div>
+          <div class="item-title-area">
+            <div class="item-title">Cloud Data Backup &amp; Sync</div>
+            <div class="item-sub">All data is device-only with zero redundancy</div>
+          </div>
+          <span class="item-tag critical">Critical</span>
+        </div>
+        <div class="item-content">
+          <p>Weight logs, meal entries, daily check-ins, journal entries, challenge progress, body measurements — every single piece of user data exists only in the phone's local storage. There is nowhere else it is saved.</p>
+          <div class="item-consequence">
+            <span class="icon">📱</span>
+            <span><strong>What happens:</strong> A broken phone, a lost device, or even just reinstalling the app means months of data vanish instantly. This generates very angry reviews and support requests.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon critical">🤖</div>
+          <div class="item-title-area">
+            <div class="item-title">AI Coach — Missing API Key</div>
+            <div class="item-sub">The AI chat feature does not work</div>
+          </div>
+          <span class="item-tag critical">Critical</span>
+        </div>
+        <div class="item-content">
+          <p>The AI Coach (chat assistant) and the food photo scanner both call Anthropic's AI service — but the code has <strong>no API key configured</strong>. Every request will fail with an authentication error.</p>
+          <div class="item-consequence">
+            <span class="icon">💥</span>
+            <span><strong>What happens:</strong> Two of the app's headline features are completely broken. Users who tap "Ask the AI Coach" or "Scan My Food" will always see an error. This will result in very poor App Store ratings.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon critical">🛡️</div>
+          <div class="item-title-area">
+            <div class="item-title">AI API Key Security Proxy</div>
+            <div class="item-sub">Embedding the API key in the app is dangerous</div>
+          </div>
+          <span class="item-tag critical">Critical</span>
+        </div>
+        <div class="item-content">
+          <p>Even once you add the API key, putting it directly in the app code is a major security risk. Anyone with basic technical skills can extract it from the installed application.</p>
+          <div class="item-consequence">
+            <span class="icon">💰</span>
+            <span><strong>What happens:</strong> Someone extracts your AI key and uses it for their own purposes. <strong>You pay the bill</strong> — potentially thousands of dollars in a single night, with no way to stop it. A backend proxy server is the only safe solution.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon critical">👥</div>
+          <div class="item-title-area">
+            <div class="item-title">Real Community Content Moderation</div>
+            <div class="item-sub">The "admin approval" system is fake</div>
+          </div>
+          <span class="item-tag critical">Critical</span>
+        </div>
+        <div class="item-content">
+          <p>The Community tab lets users submit weight-loss stories. The app says "your story will be reviewed in 24–48 hours" — but <strong>there is no one to review it</strong>. No backend, no admin panel. Submissions simply sit on the user's phone, never seen by anyone.</p>
+          <div class="item-consequence">
+            <span class="icon">😤</span>
+            <span><strong>What happens:</strong> Users submit stories and nothing ever happens. They feel misled. Meanwhile, Apple and Google both require that apps with user-submitted content have real moderation tools (approve, reject, delete, report, block). Without these, <strong>the app will be rejected</strong>.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon critical">💳</div>
+          <div class="item-title-area">
+            <div class="item-title">RevenueCat — Subscription &amp; Payment System</div>
+            <div class="item-sub">No way to charge users for the app</div>
+          </div>
+          <span class="item-tag critical">Critical</span>
+        </div>
+        <div class="item-content">
+          <p>The app currently has zero payment code. If the plan is to charge users (either a subscription or a one-time purchase), RevenueCat needs to be integrated to handle billing through Apple and Google's systems.</p>
+          <div class="item-consequence">
+            <span class="icon">🚫</span>
+            <span><strong>What happens:</strong> The app is free for everyone with no way to collect payment. Apple and Google require all digital purchases to go through their billing — there is no alternative payment method allowed.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon high">🔔</div>
+          <div class="item-title-area">
+            <div class="item-title">Push Notifications</div>
+            <div class="item-sub">No way to re-engage users</div>
+          </div>
+          <span class="item-tag high">High</span>
+        </div>
+        <div class="item-content">
+          <p>The app cannot send any notifications — no reminders to log meals, no encouragement to keep going, no "your story was approved" alerts.</p>
+          <div class="item-consequence high">
+            <span class="icon">📉</span>
+            <span><strong>What happens:</strong> Users download the app, use it for a day, and forget about it. Without gentle reminders, daily active users drop fast and retention is low.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon high">📊</div>
+          <div class="item-title-area">
+            <div class="item-title">Usage Analytics</div>
+            <div class="item-sub">No visibility into how users behave</div>
+          </div>
+          <span class="item-tag high">High</span>
+        </div>
+        <div class="item-content">
+          <p>There is no analytics system. You have no way to know how many people are using the app, which features they use, or where they get stuck and quit.</p>
+          <div class="item-consequence high">
+            <span class="icon">🤷</span>
+            <span><strong>What happens:</strong> You make product decisions completely blind. Is the AI Coach useful? Do people complete the 3-week challenge? Where do they give up? Without data, you have to guess — and guesses are often wrong.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon high">🖼️</div>
+          <div class="item-title-area">
+            <div class="item-title">Food Image Upload — No Server Endpoint</div>
+            <div class="item-sub">Images are sent directly to Anthropic, no fallback</div>
+          </div>
+          <span class="item-tag high">High</span>
+        </div>
+        <div class="item-content">
+          <p>The food scanner sends photos directly to Anthropic's API from the app. There is no server in between to resize images, log usage, handle errors gracefully, or cache results.</p>
+          <div class="item-consequence high">
+            <span class="icon">🔄</span>
+            <span><strong>What happens:</strong> Every scan call goes directly to Anthropic. If the AI service is temporarily down, the user gets a broken experience. There is no retry logic, no image compression (large photos = more cost), and no usage tracking.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PART 2: COMPLIANCE ═══════════════ -->
+<section id="compliance">
+  <div class="container">
+    <div class="section-label">Part 2 of 5</div>
+    <h2 class="section-title">App Store &amp; Google Play Compliance</h2>
+    <p class="section-desc">
+      Issues that Apple and Google reviewers will flag when you submit. Some will cause
+      an outright rejection; others must be fixed to pass review.
+    </p>
+
+    <div class="item-list">
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon critical">📄</div>
+          <div class="item-title-area">
+            <div class="item-title">No Privacy Policy URL</div>
+            <div class="item-sub">Required by both Apple and Google to submit</div>
+          </div>
+          <span class="item-tag critical">Critical</span>
+        </div>
+        <div class="item-content">
+          <p>The app has a short privacy notice inside it, but both stores require a link to a full privacy policy published on a website. This is a hard requirement for submission.</p>
+          <div class="item-consequence">
+            <span class="icon">🚫</span>
+            <span><strong>What happens:</strong> You literally cannot submit the app to either store without providing a privacy policy URL. The submission form will not let you proceed.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon critical">📷</div>
+          <div class="item-title-area">
+            <div class="item-title">Missing iOS Camera &amp; Photo Permissions</div>
+            <div class="item-sub">Info.plist does not declare required permissions</div>
+          </div>
+          <span class="item-tag critical">Critical</span>
+        </div>
+        <div class="item-content">
+          <p>The food scanner uses the camera and photo library, but the iOS configuration file is missing <code>NSCameraUsageDescription</code> and <code>NSPhotoLibraryUsageDescription</code>. On an iPhone, tapping "Take Photo" will crash the app immediately.</p>
+          <div class="item-consequence">
+            <span class="icon">💥</span>
+            <span><strong>What happens:</strong> The app crashes when a user tries to take a food photo. Apple's automated testing will detect this crash and reject the submission outright.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon critical">⚖️</div>
+          <div class="item-title-area">
+            <div class="item-title">Weight-Loss Testimonials with Specific Numbers</div>
+            <div class="item-sub">"Lost 16 kg in 3 months" — high regulatory risk</div>
+          </div>
+          <span class="item-tag critical">Critical</span>
+        </div>
+        <div class="item-content">
+          <p>The Community tab displays testimonials with specific weight-loss outcomes. Apple and Google heavily scrutinize health apps that show before/after-type claims. Even though these are real book reviews, displayed in an app they create regulatory risk.</p>
+          <div class="item-consequence">
+            <span class="icon">⚠️</span>
+            <span><strong>What happens:</strong> Apple may classify the app as making health claims requiring additional approval, or reject it outright. Both stores have strict rules about health outcome claims in apps.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon high">🩺</div>
+          <div class="item-title-area">
+            <div class="item-title">AI Coach — May Be Seen as Medical Advice</div>
+            <div class="item-sub">Discusses GLP-1 drugs, symptoms, BMI targets</div>
+          </div>
+          <span class="item-tag high">High</span>
+        </div>
+        <div class="item-content">
+          <p>The AI Coach answers questions about prescription medications (Ozempic, Wegovy), describes clinical trial data, lists pancreatitis symptoms, and gives BMI classifications. Apple may view this as the app providing medical advice.</p>
+          <div class="item-consequence high">
+            <span class="icon">🔍</span>
+            <span><strong>What happens:</strong> Apple may reject the app or ask for evidence of medical review. At minimum, stronger disclaimers about AI limitations are needed, and the AI's responses should be reviewed by a medical professional.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon high">⛑️</div>
+          <div class="item-title-area">
+            <div class="item-title">Medical Cross Symbol in Logo</div>
+            <div class="item-sub">Legally protected symbol in most countries</div>
+          </div>
+          <span class="item-tag high">High</span>
+        </div>
+        <div class="item-content">
+          <p>The app logo uses a red medical cross symbol. The red cross is a protected symbol under the Geneva Conventions and its use in commercial products is restricted in the UK, US, EU, and most other countries.</p>
+          <div class="item-consequence high">
+            <span class="icon">⚖️</span>
+            <span><strong>What happens:</strong> Apple may flag this during review. More importantly, using a protected medical symbol in a commercial wellness app carries legal risk. Recommendation: replace with a different health-related icon (e.g. a leaf, heart, or abstract mark).</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon high">👮</div>
+          <div class="item-title-area">
+            <div class="item-title">No User Reporting or Content Blocking</div>
+            <div class="item-sub">Cannot moderate or report community content</div>
+          </div>
+          <span class="item-tag high">High</span>
+        </div>
+        <div class="item-content">
+          <p>If someone submits inappropriate content to the community, there is no way for users to report it and no way for you to remove it. Apple requires apps with community features to include reporting and blocking.</p>
+          <div class="item-consequence high">
+            <span class="icon">🚫</span>
+            <span><strong>What happens:</strong> Apple will reject the app for having user-generated content without moderation and reporting tools.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon medium">📜</div>
+          <div class="item-title-area">
+            <div class="item-title">No Terms of Service / EULA</div>
+            <div class="item-sub">No legal agreement between you and your users</div>
+          </div>
+          <span class="item-tag medium">Medium</span>
+        </div>
+        <div class="item-content">
+          <p>The app has a medical disclaimer but no formal End User License Agreement or Terms of Service.</p>
+          <div class="item-consequence medium">
+            <span class="icon">⚖️</span>
+            <span><strong>What happens:</strong> Less legal protection if a user claims they were misled, if there's a dispute about subscription refunds, or if content in the app causes any issues.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon medium">🗑️</div>
+          <div class="item-title-area">
+            <div class="item-title">No Data Export or Account Deletion</div>
+            <div class="item-sub">GDPR and CCPA requirement</div>
+          </div>
+          <span class="item-tag medium">Medium</span>
+        </div>
+        <div class="item-content">
+          <p>Users cannot export their data or request account deletion. If you add cloud backup (Phase 1), EU and California privacy laws legally require you to provide these options.</p>
+          <div class="item-consequence medium">
+            <span class="icon">⚖️</span>
+            <span><strong>What happens:</strong> Risk of fines and legal action under GDPR (Europe) and CCPA (California) if you launch without data export and deletion capabilities.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon medium">🧒</div>
+          <div class="item-title-area">
+            <div class="item-title">No Age Rating or Children's Privacy</div>
+            <div class="item-sub">COPPA / children's online privacy</div>
+          </div>
+          <span class="item-tag medium">Medium</span>
+        </div>
+        <div class="item-content">
+          <p>The app collects health data and has community features but has no age gate or children's privacy protections. Apple and Google require age ratings and have specific rules for apps that could be used by children.</p>
+          <div class="item-consequence medium">
+            <span class="icon">👶</span>
+            <span><strong>What happens:</strong> The app needs an age rating (likely 12+ or 17+ due to medical content). If children under 13 could potentially use it, additional COPPA compliance measures are needed.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon medium">📋</div>
+          <div class="item-title-area">
+            <div class="item-title">Apple Privacy Questionnaire Not Completed</div>
+            <div class="item-sub">Must disclose data collection practices</div>
+          </div>
+          <span class="item-tag medium">Medium</span>
+        </div>
+        <div class="item-content">
+          <p>Apple now requires all apps to complete a privacy questionnaire in App Store Connect, detailing what data is collected and how it is used. This must be filled out before submission.</p>
+          <div class="item-consequence medium">
+            <span class="icon">📝</span>
+            <span><strong>What happens:</strong> Without completing this questionnaire, the app cannot be submitted. This is a newer Apple requirement that catches many first-time developers off guard.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon medium">📱</div>
+          <div class="item-title-area">
+            <div class="item-title">Google Play Data Safety Section</div>
+            <div class="item-sub">Must disclose data handling practices</div>
+          </div>
+          <span class="item-tag medium">Medium</span>
+        </div>
+        <div class="item-content">
+          <p>Google Play requires a "Data Safety" section in the store listing that explains what data the app collects, whether it's shared with third parties (e.g. Anthropic for AI features), and whether it's encrypted.</p>
+          <div class="item-consequence medium">
+            <span class="icon">📝</span>
+            <span><strong>What happens:</strong> The app cannot be published on Google Play without completing the Data Safety form in Google Play Console.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PART 3: STORE SUBMISSION ASSETS ═══════════════ -->
+<section id="assets">
+  <div class="container">
+    <div class="section-label">Part 3 of 5</div>
+    <h2 class="section-title">Store Submission Assets &amp; Marketing Materials</h2>
+    <p class="section-desc">
+      These are the assets you need to create before submitting to the stores. Everything
+      in this section must be produced — none of it exists yet.
+    </p>
+
+    <!-- ─── APP NAME ─── -->
+    <div class="item" style="margin-bottom: 18px;">
+      <div class="item-header">
+        <div class="item-icon critical">🏷️</div>
+        <div class="item-title-area">
+          <div class="item-title">App Name</div>
+          <div class="item-sub">Apple: 30 characters max &middot; Google: 50 characters max</div>
+        </div>
+        <span class="item-tag critical">Critical</span>
+        <span class="who-tag client">Client</span>
+      </div>
+      <div class="item-content">
+        <p>You need to decide the official app name that will appear under the icon on users' phones and in store listings. Current suggestion: <strong>"Lose Weight Smarter"</strong> — but this needs final confirmation.</p>
+        <ul class="checklist">
+          <li><span class="cb">☐</span> Decide the final app name</li>
+          <li><span class="cb">☐</span> Check it's not already taken on the App Store and Google Play</li>
+          <li><span class="cb">☐</span> Check trademark availability in your target countries</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ─── APP ICON ─── -->
+    <div class="item" style="margin-bottom: 18px;">
+      <div class="item-header">
+        <div class="item-icon critical">🎨</div>
+        <div class="item-title-area">
+          <div class="item-title">App Icon</div>
+          <div class="item-sub">Must be designed and exported in all required sizes</div>
+        </div>
+        <span class="item-tag critical">Critical</span>
+        <span class="who-tag dev">Developer</span>
+      </div>
+      <div class="item-content">
+        <p>The current logo has a medical cross that needs to be replaced. A new icon must be designed without the cross symbol, then exported in Apple's and Google's required sizes.</p>
+        <p><strong>Apple requires:</strong> 1024×1024 master (App Store) + iPhone/iPad icon sizes at 40, 58, 60, 80, 87, 120, 152, 167, 180, 1024 pixels.</p>
+        <p><strong>Google requires:</strong> 512×512 (store listing) + 192×192 (adaptive icon foreground) + 96×96 (notification icon) + various legacy sizes.</p>
+        <div class="item-consequence">
+          <span class="icon">🚫</span>
+          <span><strong>What happens:</strong> Without the icon, the app cannot be submitted. Both stores reject submissions with placeholder or improperly-sized icons.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SCREENSHOTS ─── -->
+    <div class="item" style="margin-bottom: 18px;">
+      <div class="item-header">
+        <div class="item-icon critical">📸</div>
+        <div class="item-title-area">
+          <div class="item-title">App Screenshots</div>
+          <div class="item-sub">For both App Store and Google Play listings</div>
+        </div>
+        <span class="item-tag critical">Critical</span>
+        <span class="who-tag dev">Developer</span>
+      </div>
+      <div class="item-content">
+        <p>Screenshots are the first thing a potential user sees. They must show the app in use, highlight key features, and look professional.</p>
+
+        <table class="asset-table" style="margin-top: 8px;">
+          <thead>
+            <tr><th>Store</th><th>Requirement</th><th>Details</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Apple App Store</td>
+              <td>iPhone screenshots</td>
+              <td>6.7" (1290×2796), 6.5" (1242×2688), 5.5" (1242×2208). <strong>Minimum 3, maximum 10</strong> per display size. Recommended: 6–8 screenshots.</td>
+            </tr>
+            <tr>
+              <td>Apple App Store</td>
+              <td>iPad screenshots</td>
+              <td>12.9" (2048×2732), if you support iPad. Currently the app does not have an iPad-optimised layout.</td>
+            </tr>
+            <tr>
+              <td>Google Play</td>
+              <td>Phone screenshots</td>
+              <td>Minimum 2, recommended 6–8. At least one must show the app running on a phone display.</td>
+            </tr>
+            <tr>
+              <td>Google Play</td>
+              <td>Tablet screenshots</td>
+              <td>Recommended but optional for 7" and 10" displays.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ul class="checklist">
+          <li><span class="cb">☐</span> Design screenshot templates with consistent branding</li>
+          <li><span class="cb">☐</span> Localise screenshots for each target language/market</li>
+          <li><span class="cb">☐</span> Generate all required sizes from master designs</li>
+        </ul>
+        <div class="item-consequence">
+          <span class="icon">🚫</span>
+          <span><strong>What happens:</strong> Submissions are rejected if screenshots don't meet the minimum requirements or if they show simulated/placeholder data that misrepresents the app.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── STORE DESCRIPTION ─── -->
+    <div class="item" style="margin-bottom: 18px;">
+      <div class="item-header">
+        <div class="item-icon critical">✍️</div>
+        <div class="item-title-area">
+          <div class="item-title">App Store Listing Copy</div>
+          <div class="item-sub">Description, subtitle, keywords, and promotional text</div>
+        </div>
+        <span class="item-tag critical">Critical</span>
+        <span class="who-tag both">Draft</span>
+      </div>
+      <div class="item-content">
+        <p>Each store requires several pieces of written content for the app listing. None of this has been written yet.</p>
+
+        <table class="asset-table" style="margin-top: 8px;">
+          <thead>
+            <tr><th>Store</th><th>Item</th><th>Limit</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Both</td><td>App name</td><td>Apple: 30 chars &middot; Google: 50 chars</td></tr>
+            <tr><td>Apple</td><td>Subtitle</td><td>30 characters — your value proposition in one short phrase</td></tr>
+            <tr><td>Apple</td><td>Promotional text</td><td>170 characters — promo updates without new submission</td></tr>
+            <tr><td>Apple</td><td>Description</td><td>4,000 characters — features, benefits, what makes it different</td></tr>
+            <tr><td>Apple</td><td>Keywords</td><td>100 characters — helps users find your app via search</td></tr>
+            <tr><td>Apple</td><td>Support URL</td><td>A web page where users can get help</td></tr>
+            <tr><td>Apple</td><td>Marketing URL</td><td>Optional — your website</td></tr>
+            <tr><td>Google</td><td>Short description</td><td>80 characters — brief tagline</td></tr>
+            <tr><td>Google</td><td>Full description</td><td>4,000 characters — detailed feature explanation</td></tr>
+            <tr><td>Google</td><td>Feature graphic</td><td>1,024×500 px image — promotional banner for store listing</td></tr>
+          </tbody>
+        </table>
+
+        <div class="item-consequence">
+          <span class="icon">🚫</span>
+          <span><strong>What happens:</strong> The stores require all of these fields to be completed. Without them, you cannot submit.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── WEBSITE ─── -->
+    <div class="item" style="margin-bottom: 18px;">
+      <div class="item-header">
+        <div class="item-icon critical">🌐</div>
+        <div class="item-title-area">
+          <div class="item-title">Official Website</div>
+          <div class="item-sub">Hosts privacy policy, support, and brand information</div>
+        </div>
+        <span class="item-tag critical">Critical</span>
+      </div>
+      <div class="item-content">
+        <p>Both stores require a support URL, and Apple requires a privacy policy URL. These should point to pages on an official website for the app or Dr. Asif's brand.</p>
+        <p><strong>What the website needs to contain:</strong></p>
+        <ul class="checklist">
+          <li><span class="cb">☐</span> Privacy Policy page (legally required by both stores)</li>
+          <li><span class="cb">☐</span> Terms of Service / EULA page</li>
+          <li><span class="cb">☐</span> Support / Contact page (email or form for customer inquiries)</li>
+          <li><span class="cb">☐</span> About Dr. Asif — credentials and background</li>
+          <li><span class="cb">☐</span> Copyright / legal information</li>
+          <li><span class="cb">☐</span> Optional: App download links, blog, FAQ</li>
+        </ul>
+        <div class="item-consequence">
+          <span class="icon">🚫</span>
+          <span><strong>What happens:</strong> Without a website hosting the privacy policy and support URL, the app's submission forms cannot be completed. This is a hard requirement.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SUPPORT & CONTACT ─── -->
+    <div class="item" style="margin-bottom: 18px;">
+      <div class="item-header">
+        <div class="item-icon high">💬</div>
+        <div class="item-title-area">
+          <div class="item-title">Customer Support Contact</div>
+          <div class="item-sub">Email, phone, or support channel for reviewer and user inquiries</div>
+        </div>
+        <span class="item-tag high">High</span>
+      </div>
+      <div class="item-content">
+        <p>Apple requires a contact email address or phone number for the review team to reach you. Users also need a way to contact you with questions or issues.</p>
+        <ul class="checklist">
+          <li><span class="cb">☐</span> Set up a support email address (e.g. support@drasifdiet.com)</li>
+          <li><span class="cb">☐</span> Add contact information to the App Store submission</li>
+          <li><span class="cb">☐</span> Configure support page on the website</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ─── APP PREVIEW VIDEO ─── -->
+    <div class="item" style="margin-bottom: 18px;">
+      <div class="item-header">
+        <div class="item-icon medium">🎬</div>
+        <div class="item-title-area">
+          <div class="item-title">App Preview Video (Optional but Recommended)</div>
+          <div class="item-sub">15–30 second video showcasing the app in use</div>
+        </div>
+        <span class="item-tag medium">Medium</span>
+      </div>
+      <div class="item-content">
+        <p>Apple allows (and Google Play supports) a short video preview that auto-plays in search results. Apps with preview videos see better conversion rates.</p>
+        <ul class="checklist">
+          <li><span class="cb">☐</span> Record a 15–30 second walkthrough of key features</li>
+          <li><span class="cb">☐</span> Export without audio (Apple requirement for auto-play)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ─── STORE CATEGORY ─── -->
+    <div class="item" style="margin-bottom: 18px;">
+      <div class="item-header">
+        <div class="item-icon medium">🏷️</div>
+        <div class="item-title-area">
+          <div class="item-title">Store Category &amp; Age Rating</div>
+          <div class="item-sub">Choose where the app appears in each store</div>
+        </div>
+        <span class="item-tag medium">Medium</span>
+      </div>
+      <div class="item-content">
+
+        <table class="asset-table" style="margin-top: 8px;">
+          <thead>
+            <tr><th>Store</th><th>Field</th><th>Suggestion</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Apple</td><td>Primary category</td><td>Health &amp; Fitness</td></tr>
+            <tr><td>Apple</td><td>Secondary category</td><td>Lifestyle (or none)</td></tr>
+            <tr><td>Apple</td><td>Age rating</td><td>12+ (medical content without graphic detail) or 17+ if AI health advice is deemed sensitive</td></tr>
+            <tr><td>Google</td><td>Category</td><td>Health &amp; Fitness</td></tr>
+            <tr><td>Google</td><td>Tags</td><td>Health, Fitness, Weight Loss, Nutrition</td></tr>
+            <tr><td>Google</td><td>Content rating</td><td>Complete the questionnaire — likely Teen or Mature 17+</td></tr>
+          </tbody>
+        </table>
+
+        <ul class="checklist">
+          <li><span class="cb">☐</span> Complete Apple App Store age rating questionnaire</li>
+          <li><span class="cb">☐</span> Complete Google Play content rating questionnaire</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ─── COPYRIGHT ─── -->
+    <div class="item" style="margin-bottom: 18px;">
+      <div class="item-header">
+        <div class="item-icon medium">©️</div>
+        <div class="item-title-area">
+          <div class="item-title">Copyright Information</div>
+          <div class="item-sub">Legal ownership of the app content</div>
+        </div>
+        <span class="item-tag medium">Medium</span>
+      </div>
+      <div class="item-content">
+        <p>Apple and Google require copyright information for the app listing. This includes the copyright holder name and year.</p>
+        <ul class="checklist">
+          <li><span class="cb">☐</span> Decide the copyright holder name (e.g. "Dr. Asif Mushtaq" or a company name)</li>
+          <li><span class="cb">☐</span> Format: © 2026 Dr. Asif Mushtaq. All rights reserved.</li>
+          <li><span class="cb">☐</span> Ensure the book content usage rights are clear (Dr. Asif holds the rights to "Lose Weight Smarter for Life")</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ─── DEMO ACCOUNT ─── -->
+    <div class="item" style="margin-bottom: 18px;">
+      <div class="item-header">
+        <div class="item-icon medium">👤</div>
+        <div class="item-title-area">
+          <div class="item-title">Demo Account for App Reviewers</div>
+          <div class="item-sub">Apple and Google need to test your app</div>
+        </div>
+        <span class="item-tag medium">Medium</span>
+      </div>
+      <div class="item-content">
+        <p>Once the app has user accounts, Apple and Google reviewers need a test account to log in and evaluate the app. This must be provided in the submission notes.</p>
+        <ul class="checklist">
+          <li><span class="cb">☐</span> Create a dedicated reviewer test account</li>
+          <li><span class="cb">☐</span> Provide login credentials in the submission review notes</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ─── CONTENT RIGHTS ─── -->
+    <div class="item" style="margin-bottom: 18px;">
+      <div class="item-header">
+        <div class="item-icon medium">📖</div>
+        <div class="item-title-area">
+          <div class="item-title">Content Rights Disclosure (Third-Party Content)</div>
+          <div class="item-sub">The app is based on a published book</div>
+        </div>
+        <span class="item-tag medium">Medium</span>
+      </div>
+      <div class="item-content">
+        <p>The app uses content from Dr. Asif's published book "Lose Weight Smarter for Life." Apple and Google may ask you to confirm you have the rights to use this content in an app.</p>
+        <ul class="checklist">
+          <li><span class="cb">☐</span> Confirm you hold the digital distribution rights for the book content</li>
+          <li><span class="cb">☐</span> Be prepared to provide documentation if Apple/Google requests it</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════ PART 4: DEVELOPER ACCOUNTS & INFRASTRUCTURE ═══════════════ -->
+<section id="accounts">
+  <div class="container">
+    <div class="section-label">Part 4 of 5</div>
+    <h2 class="section-title">Developer Accounts &amp; Infrastructure</h2>
+    <p class="section-desc">
+      Before you can submit anything to the stores, you need to register as a developer
+      and set up the publishing infrastructure.
+    </p>
+
+    <div class="item-list">
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon critical">🍎</div>
+          <div class="item-title-area">
+            <div class="item-title">Apple Developer Program Membership</div>
+            <div class="item-sub">$99/year (or £79/year in the UK)</div>
+          </div>
+          <span class="item-tag critical">Critical</span>
+        </div>
+        <div class="item-content">
+          <p>You must enrol in the Apple Developer Program to distribute apps on the App Store. It costs $99 per year and requires an Apple ID. Enrolment can take a few days to a few weeks if they need to verify your identity or business details.</p>
+          <ul class="checklist">
+            <li><span class="cb">☐</span> Register at <a href="https://developer.apple.com/program/" style="color:var(--teal)">developer.apple.com/program/</a></li>
+            <li><span class="cb">☐</span> Choose individual or organisation enrolment</li>
+            <li><span class="cb">☐</span> For organisation: have your D-U-N-S number ready (business verification)</li>
+          </ul>
+          <div class="item-consequence">
+            <span class="icon">🚫</span>
+            <span><strong>What happens:</strong> Without an Apple Developer account, you cannot submit to the App Store at all. No workaround.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon critical">▶️</div>
+          <div class="item-title-area">
+            <div class="item-title">Google Play Developer Account</div>
+            <div class="item-sub">$25 one-time fee</div>
+          </div>
+          <span class="item-tag critical">Critical</span>
+        </div>
+        <div class="item-content">
+          <p>A Google Play Developer account costs a one-time fee of $25. Registration is usually faster than Apple's.</p>
+          <ul class="checklist">
+            <li><span class="cb">☐</span> Register at <a href="https://play.google.com/console/" style="color:var(--teal)">play.google.com/console/</a></li>
+            <li><span class="cb">☐</span> Pay the $25 registration fee</li>
+          </ul>
+          <div class="item-consequence">
+            <span class="icon">🚫</span>
+            <span><strong>What happens:</strong> Without a Google Play Developer account, you cannot publish on Google Play.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon critical">🔑</div>
+          <div class="item-title-area">
+            <div class="item-title">App Signing Certificates &amp; Provisioning Profiles</div>
+            <div class="item-sub">Required to build a distributable iOS app</div>
+          </div>
+          <span class="item-tag critical">Critical</span>
+        </div>
+        <div class="item-content">
+          <p>Apple requires all iOS apps to be digitally signed with a certificate before they can be installed on devices or submitted to the App Store. This involves creating certificates, app IDs, and provisioning profiles in the Apple Developer portal.</p>
+          <ul class="checklist">
+            <li><span class="cb">☐</span> Create a Certificate Signing Request (CSR)</li>
+            <li><span class="cb">☐</span> Generate distribution certificate in Apple Developer portal</li>
+            <li><span class="cb">☐</span> Create App ID with the correct bundle identifier</li>
+            <li><span class="cb">☐</span> Generate provisioning profile for App Store distribution</li>
+            <li><span class="cb">☐</span> Configure code signing in Xcode project</li>
+          </ul>
+          <div class="item-consequence">
+            <span class="icon">🚫</span>
+            <span><strong>What happens:</strong> Without valid signing, Xcode will refuse to build the app for distribution, and App Store Connect will reject unsigned uploads.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon critical">☕</div>
+          <div class="item-title-area">
+            <div class="item-title">Android App Signing Key</div>
+            <div class="item-sub">Required to publish on Google Play</div>
+          </div>
+          <span class="item-tag critical">Critical</span>
+        </div>
+        <div class="item-content">
+          <p>Google Play requires Android apps to be signed with a keystore. You can use Google's Play App Signing (recommended) or manage your own key.</p>
+          <ul class="checklist">
+            <li><span class="cb">☐</span> Generate a keystore for app signing (or use Google Play App Signing)</li>
+            <li><span class="cb">☐</span> Configure build.gradle with signing config</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon high">🧪</div>
+          <div class="item-title-area">
+            <div class="item-title">TestFlight &amp; Internal Testing Setup</div>
+            <div class="item-sub">Apple's beta testing platform</div>
+          </div>
+          <span class="item-tag high">High</span>
+        </div>
+        <div class="item-content">
+          <p>Before submitting to Apple review, you should test the app via TestFlight (Apple's beta testing platform). This allows you to distribute the app to internal and external testers before going live.</p>
+          <ul class="checklist">
+            <li><span class="cb">☐</span> Set up TestFlight in App Store Connect</li>
+            <li><span class="cb">☐</span> Add internal testers (up to 100 team members via email)</li>
+            <li><span class="cb">☐</span> Optional: Set up external testing for beta users (requires review but less strict)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon high">⚙️</div>
+          <div class="item-title-area">
+            <div class="item-title">Push Notification Certificates (Apple)</div>
+            <div class="item-sub">Required for push notifications to iPhone users</div>
+          </div>
+          <span class="item-tag high">High</span>
+        </div>
+        <div class="item-content">
+          <p>If push notifications are implemented, Apple requires an APNs (Apple Push Notification service) certificate or key to be configured in the Developer Portal.</p>
+          <ul class="checklist">
+            <li><span class="cb">☐</span> Create APNs key in Apple Developer portal</li>
+            <li><span class="cb">☐</span> Configure the push notification capability in Xcode</li>
+            <li><span class="cb">☐</span> Set up Firebase Cloud Messaging or similar for push delivery (if using cross-platform)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-icon high">📝</div>
+          <div class="item-title-area">
+            <div class="item-title">Export Compliance Documentation (Apple)</div>
+            <div class="item-sub">Encryption declaration for App Store submission</div>
+          </div>
+          <span class="item-tag high">High</span>
+        </div>
+        <div class="item-content">
+          <p>Apple requires all apps to declare whether they use encryption. Since the app connects to servers (once the backend is built) and the AI features use HTTPS, you need to answer the export compliance questionnaire.</p>
+          <ul class="checklist">
+            <li><span class="cb">☐</span> Complete the Export Compliance section in App Store Connect</li>
+            <li><span class="cb">☐</span> If using standard HTTPS only, you can self-classify under Category 5 Part 2</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PART 5: PRIORITY ACTION PLAN ═══════════════ -->
+<section id="plan">
+  <div class="container">
+    <div class="section-label">Part 5 of 5</div>
+    <h2 class="section-title">Priority Action Plan</h2>
+    <p class="section-desc">
+      The recommended order of work. Each phase builds on the previous one.
+    </p>
+
+    <!-- Phase 0 -->
+    <div class="priority-phase">
+      <div class="phase-header">
+        <span class="phase-badge p0">Immediate</span>
+        <h3>Phase 0 — Quick Wins (1–3 days)</h3>
+      </div>
+      <div class="phase-desc">Fix legal and compliance blockers that take minimal time.</div>
+      <ul>
+        <li><span class="bullet p0">1</span> Register domain and set up a simple website</li>
+        <li><span class="bullet p0">2</span> Write and publish the Privacy Policy page on the website</li>
+        <li><span class="bullet p0">3</span> Write Terms of Service / EULA</li>
+        <li><span class="bullet p0">4</span> Add camera and photo library permission descriptions to iOS Info.plist</li>
+        <li><span class="bullet p1">5</span> Redesign the app icon to remove the medical cross symbol</li>
+        <li><span class="bullet p1">6</span> Soften or add disclaimers around weight-loss testimonials</li>
+        <li><span class="bullet p1">7</span> Add stronger AI limitations disclaimer to the Coach feature</li>
+        <li><span class="bullet p0">8</span> Register Apple Developer Program ($99/year)</li>
+        <li><span class="bullet p0">9</span> Register Google Play Developer account ($25 one-time)</li>
+      </ul>
+    </div>
+
+    <!-- Phase 1 -->
+    <div class="priority-phase">
+      <div class="phase-header">
+        <span class="phase-badge p1">Weeks 1–4</span>
+        <h3>Phase 1 — Backend Server (3–5 weeks)</h3>
+      </div>
+      <div class="phase-desc">Build the server that makes the app actually work.</div>
+      <ul>
+        <li><span class="bullet p0">1</span> User authentication system (email/password or social login)</li>
+        <li><span class="bullet p0">2</span> Cloud database for user data backup and sync</li>
+        <li><span class="bullet p0">3</span> Secure AI API proxy server (Anthropic key stays on server, not in app)</li>
+        <li><span class="bullet p0">4</span> Admin panel for community story moderation (approve/reject/delete)</li>
+        <li><span class="bullet p1">5</span> User reporting system for community content</li>
+        <li><span class="bullet p1">6</span> Push notification infrastructure</li>
+        <li><span class="bullet p1">7</span> Usage analytics system</li>
+      </ul>
+    </div>
+
+    <!-- Phase 2 -->
+    <div class="priority-phase">
+      <div class="phase-header">
+        <span class="phase-badge p2">Weeks 4–7</span>
+        <h3>Phase 2 — Payments &amp; Store Assets (2–3 weeks)</h3>
+      </div>
+      <div class="phase-desc">Add monetisation and prepare all store submission materials.</div>
+      <ul>
+        <li><span class="bullet p0">1</span> Integrate RevenueCat SDK for App Store and Google Play billing</li>
+        <li><span class="bullet p1">2</span> Design and implement paywall screens</li>
+        <li><span class="bullet p2">3</span> Add data export and account deletion features (GDPR/CCPA)</li>
+        <li><span class="bullet p2">4</span> Design and generate all app icon sizes</li>
+        <li><span class="bullet p2">5</span> Design and generate App Store screenshots (all display sizes)</li>
+        <li><span class="bullet p2">6</span> Write App Store description, subtitle, keywords, and promotional text</li>
+        <li><span class="bullet p2">7</span> Write Google Play short description and full description</li>
+        <li><span class="bullet p2">8</span> Design Google Play feature graphic (1024×500 px)</li>
+        <li><span class="bullet p2">9</span> Complete Apple privacy questionnaire in App Store Connect</li>
+        <li><span class="bullet p2">10</span> Complete Google Play Data Safety section</li>
+        <li><span class="bullet p2">11</span> Complete Apple age rating and Google Play content rating questionnaires</li>
+        <li><span class="bullet p2">12</span> Prepare demo account for reviewers</li>
+        <li><span class="bullet p2">13</span> Fill in all store metadata (copyright, support URL, category, etc.)</li>
+      </ul>
+    </div>
+
+    <!-- Phase 3 -->
+    <div class="priority-phase">
+      <div class="phase-header">
+        <span class="phase-badge p3">Weeks 7–8</span>
+        <h3>Phase 3 — Certificates &amp; Signing (1 week)</h3>
+      </div>
+      <div class="phase-desc">Set up code signing infrastructure for distribution.</div>
+      <ul>
+        <li><span class="bullet p1">1</span> Create Apple distribution certificate and provisioning profiles</li>
+        <li><span class="bullet p1">2</span> Create Android keystore or configure Play App Signing</li>
+        <li><span class="bullet p2">3</span> Configure code signing in Xcode and Android build</li>
+        <li><span class="bullet p2">4</span> Complete Apple export compliance questionnaire</li>
+        <li><span class="bullet p2">5</span> Set up TestFlight with internal testers</li>
+        <li><span class="bullet p2">6</span> Test the full app flow via TestFlight and internal APK</li>
+      </ul>
+    </div>
+
+    <!-- Phase 4 -->
+    <div class="priority-phase">
+      <div class="phase-header">
+        <span class="phase-badge p3">Weeks 8–10</span>
+        <h3>Phase 4 — Launch &amp; Iterate (1–2 weeks)</h3>
+      </div>
+      <div class="phase-desc">Submit, respond to feedback, and go live.</div>
+      <ul>
+        <li><span class="bullet p2">1</span> End-to-end testing with the new backend on real devices</li>
+        <li><span class="bullet p2">2</span> Submit to Apple App Store via App Store Connect</li>
+        <li><span class="bullet p2">3</span> Submit to Google Play via Google Play Console</li>
+        <li><span class="bullet p3">4</span> Monitor for reviewer feedback, fix any issues, resubmit</li>
+        <li><span class="bullet p3">5</span> Once approved — celebrate the launch! 🎉</li>
+      </ul>
+    </div>
+
+    <!-- ─── TIMELINE ─── -->
+    <div class="highlight-box">
+      <h4>⏱️ Total Estimated Timeline</h4>
+      <p>
+        <strong>8–12 weeks</strong> for a small team (1–2 backend developers + 1 frontend/mobile developer).<br>
+        Phase 0 can be done immediately. Phase 1 is the heaviest lift. Phases 2 and 3 can run
+        partially in parallel with Phase 1 if the team is well-coordinated.
+      </p>
+    </div>
+
+    <!-- ─── BUDGET NOTES ─── -->
+    <div class="highlight-box" style="margin-top: 16px; background: #FDF2E9; border-color: #E8C3A0;">
+      <h4 style="color: var(--high);">💵 Up-Front Costs (Excluding Development Fees)</h4>
+      <p style="margin-bottom: 8px;">
+        These are the unavoidable costs before launch, not counting developer time:
+      </p>
+      <table class="asset-table" style="margin-top: 4px;">
+        <thead>
+          <tr><th>Item</th><th>Cost</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Apple Developer Program</td><td>$99/year</td><td>Renewed annually</td></tr>
+          <tr><td>Google Play Developer Account</td><td>$25</td><td>One-time fee</td></tr>
+          <tr><td>Domain name (e.g. drasifdiet.com)</td><td>~$10–15/year</td><td>For website and email</td></tr>
+          <tr><td>Website hosting</td><td>~$5–20/month</td><td>Simple static site or CMS</td></tr>
+          <tr><td>Cloud server (backend)</td><td>~$20–100/month</td><td>Depends on user count</td></tr>
+          <tr><td>AI API usage (Anthropic)</td><td>Pay-as-you-go</td><td>~$0.01–0.03 per AI chat message and ~$0.01–0.05 per food scan</td></tr>
+          <tr><td>RevenueCat</td><td>Free tier available</td><td>Paid plans start at $12/month for growth features</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="page-footer">
+  <hr>
+  <p>Lose Weight Smarter — Dr. Asif &middot; App Readiness Audit &middot; May 2026</p>
+  <p style="margin-top: 4px;">Prepared for client review — confidential</p>
+</footer>
+
+</body>
+</html>
