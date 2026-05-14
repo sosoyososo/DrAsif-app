@@ -3914,7 +3914,7 @@ export default function App() {
     return (
       <div style={{ maxWidth: 390, margin: "0 auto", minHeight: "100vh", background: T.bg, overflowX: "hidden" }}>
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
-        <div style={{ position: "fixed", top: 14, right: 14, zIndex: 200 }}>
+        <div className="sa-top" style={{ position: "fixed", right: 14, zIndex: 200 }}>
           <button onClick={() => setShowSettings(false)} style={{
             background: "rgba(255,255,255,0.95)", backdropFilter: "blur(10px)",
             border: `1px solid ${T.border}`, borderRadius: 50, padding: "7px 16px",
@@ -3963,7 +3963,7 @@ export default function App() {
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
 
       {/* Top-right controls */}
-      <div style={{ position: "fixed", top: 14, right: 14, zIndex: 200, display: "flex", gap: 8 }}>
+      <div className="sa-top" style={{ position: "fixed", right: 14, zIndex: 200, display: "flex", gap: 8 }}>
         <button onClick={() => setShowSettings(true)} style={{
           background: "rgba(255,255,255,0.95)", backdropFilter: "blur(12px)",
           border: `1px solid ${T.border}`, borderRadius: 50, width: 38, height: 38,
@@ -3973,14 +3973,14 @@ export default function App() {
         }}>⚙</button>
       </div>
 
-      <div style={{ overflowY: "auto", height: "calc(100vh - 72px)" }}>{renderTab()}</div>
+      <div className="sa-cont" style={{ overflowY: "auto" }}>{renderTab()}</div>
 
       {/* ── More drawer (slides up) ── */}
       {showMore && (
         <>
           <div onClick={() => setShowMore(false)} style={{ position: "fixed", inset: 0, zIndex: 98, background: "rgba(15,45,74,0.35)", backdropFilter: "blur(4px)" }} />
-          <div style={{
-            position: "fixed", bottom: 72, left: "50%", transform: "translateX(-50%)",
+          <div className="sa-draw" style={{
+            position: "fixed", left: "50%", transform: "translateX(-50%)",
             width: "100%", maxWidth: 390, zIndex: 99,
             background: "rgba(255,255,255,0.99)", backdropFilter: "blur(20px)",
             borderTop: `1px solid ${T.border}`, borderRadius: "20px 20px 0 0",
@@ -4012,12 +4012,12 @@ export default function App() {
       )}
 
       {/* Bottom nav — 5 primary tabs + More */}
-      <div style={{
+      <div className="sa-bot" style={{
         position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)",
         width: "100%", maxWidth: 390,
         background: "rgba(255,255,255,0.98)", backdropFilter: "blur(24px)",
         borderTop: `1px solid ${T.border}`, zIndex: 100,
-        padding: "6px 0 16px",
+        padding: "6px 0",
       }}>
         <div style={{ display: "flex", padding: "0 4px" }}>
           {PRIMARY_TABS.map(t => {
