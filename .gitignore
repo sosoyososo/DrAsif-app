@@ -12,3 +12,6 @@ android/captures
 android/.idea
 *.iml
 local.properties
+
+# Superpowers brainstorm sessions
+.superpowers
