@@ -9,6 +9,11 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "cap:sync": "cap sync",
+    "cap:open:ios": "cap open ios",
+    "cap:open:android": "cap open android",
+    "cap:build:ios": "vite build && cap sync ios",
+    "cap:build:android": "vite build && cap sync android",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,6 +21,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@capacitor/android": "^7.6.5",
+    "@capacitor/app": "^7.1.2",
+    "@capacitor/cli": "^7.6.5",
+    "@capacitor/core": "^7.6.5",
+    "@capacitor/ios": "^7.6.5",
+    "@capacitor/splash-screen": "^7.0.5",
+    "@capacitor/status-bar": "^7.0.6",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
   },

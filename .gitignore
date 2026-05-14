@@ -4,3 +4,11 @@ dist
 .playwright-mcp
 .DS_Store
 *.local
+
+# Capacitor
+ios/App/Pods
+android/.gradle
+android/captures
+android/.idea
+*.iml
+local.properties
