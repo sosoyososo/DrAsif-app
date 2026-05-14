@@ -3891,7 +3891,7 @@ export default function App() {
   // Splash
   if (splash) {
     return (
-      <div style={{ maxWidth: 390, margin: "0 auto", minHeight: "100vh" }}>
+      <div style={{ width: "100%", minHeight: "100vh" }}>
         <SplashScreen onDone={() => setSplash(false)} />
       </div>
     );
@@ -3902,7 +3902,7 @@ export default function App() {
     return (
       <>
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
-        <div style={{ maxWidth: 390, margin: "0 auto" }}>
+        <div style={{ width: "100%" }}>
           <OnboardingScreen onSelect={(g, profile) => { setGender(g); setUserProfile(profile || null); setActive("home"); }} />
         </div>
       </>
@@ -3912,7 +3912,7 @@ export default function App() {
   // Settings overlay
   if (showSettings) {
     return (
-      <div style={{ maxWidth: 390, margin: "0 auto", minHeight: "100vh", background: T.bg, overflowX: "hidden" }}>
+      <div style={{ width: "100%", minHeight: "100vh", background: T.bg, overflowX: "hidden" }}>
         <style>{`
           .sa-bot  { padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)) !important; }
           .sa-cont { height: calc(100vh - 72px - env(safe-area-inset-bottom, 0px)) !important; }
@@ -3959,7 +3959,7 @@ export default function App() {
   };
 
   return (
-    <div style={{ maxWidth: 390, margin: "0 auto", minHeight: "100vh", background: T.bg, position: "relative", overflowX: "hidden" }}>
+    <div style={{ width: "100%", minHeight: "100vh", background: T.bg, position: "relative", overflowX: "hidden" }}>
       <style>{`
         .sa-bot  { padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)) !important; }
         .sa-cont { height: calc(100vh - 72px - env(safe-area-inset-bottom, 0px)) !important; }
