@@ -51,17 +51,24 @@ The `T` object (lines 6-46) defines the colour palette. Deep navy primary, teal 
 
 ### Running the App
 
-This is a plain JSX file — no bundler. Run it directly:
+Built with Vite + React. Deployed to iOS/Android via Capacitor.
 
-1. Open `index.html` (if it exists) or create one that imports the JSX file via Babel standalone
-2. Or serve with any static file server:
-   ```
-   python3 -m http.server 8000
-   ```
+```bash
+npm run dev          # dev server with HMR
+npm run build        # production build to dist/
+```
+
+### iOS Capacitor (Makefile)
+
+```bash
+make ios-list                            # list available iOS targets
+make ios-dev                             # build → sync → run (default device)
+make ios-dev TARGET=00008030-00123456    # build → sync → run (specific device)
+```
 
 ### Common Tasks
 
-No test suite, no linting config, no build step. The file is self-contained React code meant to run with Babel standalone transform (unpkg/babel-standalone or similar).
+No test suite, no linting config.
 
 ### Adding Features
 
