@@ -1919,7 +1919,7 @@ If you cannot identify food, return: { "error": "Could not identify food in this
       )}
 
       {/* Header */}
-      <div style={{ paddingTop: 22, marginBottom: 14 }}>
+      <div style={{ paddingTop: "calc(22px + env(safe-area-inset-top))", marginBottom: 14 }}>
         <div style={{ marginBottom: 12 }}><LogoFull /></div>
         <h1 style={{ color: T.dark, fontSize: 26, fontFamily: "'Cormorant Garamond',serif", fontWeight: 700, margin: 0 }}>Daily Calories</h1>
         <p style={{ color: T.light, fontSize: 13, fontFamily: "'DM Sans',sans-serif", marginTop: 4 }}>
@@ -2381,7 +2381,7 @@ function TrackTab({ plan, gender, setGender }) {
 
   return (
     <div style={{ padding: "0 16px 100px" }}>
-      <div style={{ paddingTop: 22, marginBottom: 18 }}>
+      <div style={{ paddingTop: "calc(22px + env(safe-area-inset-top))", marginBottom: 18 }}>
         <div style={{ marginBottom: 12 }}><LogoFull /></div>
         <h1 style={{ color: T.dark, fontSize: 26, fontFamily: "'Cormorant Garamond',serif", fontWeight: 700, margin: 0 }}>Your A-to-Z Journey</h1>
         <p style={{ color: T.light, fontSize: 13, fontFamily: "'DM Sans',sans-serif", marginTop: 4 }}>Guided by BMI, waist size & body composition · Chapter 2</p>
@@ -2806,7 +2806,7 @@ RESPONSE RULES:
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 130px)" }}>
-      <div style={{ padding: "20px 18px 8px", flexShrink: 0 }}>
+      <div style={{ padding: "20px 18px 8px", flexShrink: 0, paddingTop: "calc(20px + env(safe-area-inset-top))" }}>
         <div style={{ marginBottom: 12 }}><LogoFull /></div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
@@ -2878,7 +2878,7 @@ function LearnTab({ gender }) {
 
   return (
     <div style={{ padding: "0 16px 100px" }}>
-      <div style={{ paddingTop: 22, marginBottom: 20 }}>
+      <div style={{ paddingTop: "calc(22px + env(safe-area-inset-top))", marginBottom: 20 }}>
         <LogoFull />
       </div>
 
@@ -2991,7 +2991,7 @@ function CommunityTab({ gender }) {
     <div style={{ padding: "0 16px 100px", background: T.bg }}>
 
       {/* Header */}
-      <div style={{ paddingTop: 24, marginBottom: 20 }}>
+      <div style={{ paddingTop: "calc(24px + env(safe-area-inset-top))", marginBottom: 20 }}>
         <div style={{ marginBottom: 14 }}><LogoFull /></div>
         <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", letterSpacing: 2, textTransform: "uppercase", margin: "0 0 4px" }}>Chapter 11</p>
         <h1 style={{ color: T.navy, fontSize: 26, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, margin: "0 0 4px", letterSpacing: -0.5 }}>Community</h1>
