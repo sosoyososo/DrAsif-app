@@ -3671,7 +3671,7 @@ function SettingsScreen({ gender, setGender, userProfile, setUserProfile, onClos
 
   return (
     <div style={{ padding: "0 16px 100px" }}>
-      <div style={{ paddingTop: 24, marginBottom: 24 }}>
+      <div style={{ paddingTop: "calc(24px + env(safe-area-inset-top))", marginBottom: 24 }}>
         <LogoFull />
       </div>
 
