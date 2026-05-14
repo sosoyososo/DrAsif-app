@@ -3913,6 +3913,12 @@ export default function App() {
   if (showSettings) {
     return (
       <div style={{ maxWidth: 390, margin: "0 auto", minHeight: "100vh", background: T.bg, overflowX: "hidden" }}>
+        <style>{`
+          .sa-bot  { padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)) !important; }
+          .sa-cont { height: calc(100vh - 72px - env(safe-area-inset-bottom, 0px)) !important; }
+          .sa-draw { bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important; }
+          .sa-top  { top: max(14px, env(safe-area-inset-top, 14px)) !important; }
+        `}</style>
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
         <div className="sa-top" style={{ position: "fixed", right: 14, zIndex: 200 }}>
           <button onClick={() => setShowSettings(false)} style={{
