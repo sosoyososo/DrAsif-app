@@ -12,7 +12,7 @@ CapApp.addListener("backButton", ({ canGoBack }) => {
   }
 });
 
-StatusBar.setStyle({ style: Style.Dark });
+StatusBar.setStyle({ style: Style.Light });
 SplashScreen.hide();
 
 const root = createRoot(document.getElementById("root"));
