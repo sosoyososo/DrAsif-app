@@ -550,7 +550,7 @@ function FoodTab({plan}) {
   const mealIdx={breakfast:0,lunch:1,supper:2};
   return (
     <div style={{height:"100%",overflowY:"auto",background:T.bg,paddingBottom:90}}>
-      <div style={{background:"linear-gradient(135deg,#0F2D4A,#1A4A6E 50%,#1A7A6E)",padding:"28px 18px 22px",marginBottom:12}}>
+      <div style={{background:"linear-gradient(135deg,#0F2D4A,#1A4A6E 50%,#1A7A6E)",padding:"28px 18px 22px",marginBottom:12,paddingTop:"calc(28px + env(safe-area-inset-top))"}}>
         <p style={{color:"rgba(255,255,255,0.4)",fontSize:10,letterSpacing:2,textTransform:"uppercase",margin:"0 0 4px"}}>Chapter 3</p>
         <p style={{color:"#fff",fontSize:24,fontWeight:700,margin:"0 0 8px"}}>Food Guide 🥗</p>
         <div style={{background:"rgba(255,255,255,0.1)",borderRadius:12,padding:"11px 13px",border:"1px solid rgba(255,255,255,0.12)"}}>
