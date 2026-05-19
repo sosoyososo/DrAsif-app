@@ -372,7 +372,6 @@ If you cannot identify food, return: {"error":"Could not identify food. Please t
       <ToastMsg msg={toast}/>
       <input ref={fileRef} type="file" accept="image/*" capture="environment" onChange={handleImageSelect} style={{display:"none"}}/>
       <div style={{padding:"20px 15px 0",paddingTop:"calc(20px + env(safe-area-inset-top))"}}>
-        <div style={{marginBottom:12}}><LogoFull /></div>
         <p style={{color:T.navy,fontSize:22,fontWeight:700,margin:"0 0 2px"}}>Daily Calories 🍽</p>
         <p style={{color:T.light,fontSize:12,margin:"0 0 13px"}}>{plan.icon} {plan.label} · {lim.toLocaleString()} kcal limit · 500 kcal burn goal</p>
 
@@ -788,7 +787,6 @@ function TrackTab({plan, gender}) {
   return (
     <div style={{height:"100%",overflowY:"auto",background:T.bg,padding:"22px 15px 90px"}}>
       <div style={{paddingTop:"calc(22px + env(safe-area-inset-top))",marginBottom:18}}>
-        <div style={{marginBottom:12}}><LogoFull /></div>
         <p style={{color:T.navy,fontSize:22,fontWeight:700,margin:"0 0 3px"}}>Track Progress 📊</p>
         <p style={{color:T.light,fontSize:12,margin:"0 0 14px"}}>Weekly weigh-ins — same time, same conditions.</p>
       </div>
@@ -894,7 +892,6 @@ function LearnTab() {
   return (
     <div style={{height:"100%",overflowY:"auto",background:T.bg,padding:"22px 15px 90px"}}>
       <div className="sa-top" style={{paddingTop:"calc(22px + env(safe-area-inset-top))",marginBottom:18}}>
-        <div style={{marginBottom:12}}><LogoFull /></div>
         <p style={{color:T.navy,fontSize:22,fontWeight:700,margin:"0 0 14px"}}>The Book — 13 Chapters 📖</p>
       </div>
       {chs.map(ch=>(
@@ -929,7 +926,6 @@ function CommunityTab() {
   return (
     <div style={{height:"100%",overflowY:"auto",background:T.bg,padding:"22px 15px 90px"}}>
       <div style={{paddingTop:"calc(24px + env(safe-area-inset-top))",marginBottom:20}}>
-        <div style={{marginBottom:14}}><LogoFull /></div>
         <p style={{color:T.light,fontSize:11,fontFamily:"'DM Sans',sans-serif",letterSpacing:2,textTransform:"uppercase",margin:"0 0 4px"}}>Chapter 11</p>
         <p style={{color:T.navy,fontSize:26,fontFamily:"'DM Sans',sans-serif",fontWeight:700,margin:"0 0 4px",letterSpacing:-0.5}}>Community</p>
       </div>
@@ -967,7 +963,6 @@ function SettingsPanel({gender, setGender, userProfile, setUserProfile, onClose}
   return (
     <div style={{padding:"14px 16px 80px",paddingTop:"calc(14px + env(safe-area-inset-top))"}}>
       <ToastMsg msg={toast}/>
-      <div style={{marginBottom:24}}><LogoFull /></div>
       <p style={{color:T.light,fontSize:11,fontWeight:700,letterSpacing:1,textTransform:"uppercase",margin:"0 0 10px"}}>Your Plan</p>
       <Card style={{background:T.tealXL,border:`1.5px solid ${T.teal}30`}}>
         <p style={{color:T.teal,fontSize:16,fontWeight:700,margin:"0 0 3px"}}>{plan.icon} {plan.label}'s Plan <span style={{background:userProfile?T.teal:T.navyMid,color:"#fff",fontSize:9,fontWeight:700,padding:"2px 7px",borderRadius:50,marginLeft:4}}>{userProfile?"✦ Personalised":"Standard"}</span></p>
