@@ -218,7 +218,7 @@ function HomeTab({plan, streakDays, setStreakDays, setShowSettings}) {
   const days = ["M","T","W","T","F","S","S"];
   return (
     <div style={{height:"100%",overflowY:"auto",background:T.bg,paddingBottom:90}}>
-      <div style={{background:"linear-gradient(135deg,#0F2D4A,#1A4A6E 55%,#1A7A6E)",padding:"36px 18px 26px",marginBottom:12}}>
+      <div style={{background:"linear-gradient(135deg,#0F2D4A,#1A4A6E 55%,#1A7A6E)",padding:"36px 18px 26px",marginBottom:12,paddingTop:"calc(36px + env(safe-area-inset-top))"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
           <div>
             <p style={{color:"rgba(255,255,255,0.42)",fontSize:11,margin:"0 0 5px",letterSpacing:1.5,textTransform:"uppercase"}}>{new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"})}</p>
@@ -371,7 +371,8 @@ If you cannot identify food, return: {"error":"Could not identify food. Please t
     <div style={{height:"100%",overflowY:"auto",background:T.bg,paddingBottom:90}}>
       <ToastMsg msg={toast}/>
       <input ref={fileRef} type="file" accept="image/*" capture="environment" onChange={handleImageSelect} style={{display:"none"}}/>
-      <div style={{padding:"20px 15px 0"}}>
+      <div style={{padding:"20px 15px 0",paddingTop:"calc(20px + env(safe-area-inset-top))"}}>
+        <div style={{marginBottom:12}}><LogoFull /></div>
         <p style={{color:T.navy,fontSize:22,fontWeight:700,margin:"0 0 2px"}}>Daily Calories 🍽</p>
         <p style={{color:T.light,fontSize:12,margin:"0 0 13px"}}>{plan.icon} {plan.label} · {lim.toLocaleString()} kcal limit · 500 kcal burn goal</p>
 
@@ -675,7 +676,7 @@ function ChallengeTab({plan}) {
   const toggle=id=>setChecked(c=>({...c,[dk]:{...tc,[id]:!tc[id]}}));
   return (
     <div style={{height:"100%",overflowY:"auto",background:T.bg,paddingBottom:90}}>
-      <div style={{background:`linear-gradient(160deg,${cfg.color},#0F2D4A)`,padding:"28px 18px 20px",marginBottom:12}}>
+      <div style={{background:`linear-gradient(160deg,${cfg.color},#0F2D4A)`,padding:"28px 18px 20px",marginBottom:12,paddingTop:"calc(28px + env(safe-area-inset-top))"}}>
         <p style={{color:"rgba(255,255,255,0.42)",fontSize:10,letterSpacing:2,textTransform:"uppercase",margin:"0 0 4px"}}>Programme</p>
         <p style={{color:"#fff",fontSize:24,fontWeight:700,margin:"0 0 13px"}}>{cfg.emoji} {cfg.label}</p>
         <div style={{display:"flex",gap:8}}>
@@ -754,7 +755,7 @@ function CoachTab({plan, gender}) {
   };
   return (
     <div style={{display:"flex",flexDirection:"column",height:"100%",background:T.bg}}>
-      <div style={{padding:"20px 17px 7px",flexShrink:0}}>
+      <div className="sa-top" style={{padding:"20px 17px 7px",flexShrink:0}}>
         <p style={{color:T.navy,fontSize:22,fontWeight:700,margin:0}}>AI Coach ✨</p>
         <p style={{color:T.light,fontSize:12,marginTop:3}}>All 13 chapters · {plan.icon} {plan.label} · {plan.presetMeals} kcal</p>
       </div>
@@ -786,8 +787,11 @@ function TrackTab({plan, gender}) {
   const add=()=>{if(!w&&!wt)return;setEntries(p=>[{date:new Date().toLocaleDateString("en-GB",{day:"numeric",month:"short"}),w,wt,bf},...p].slice(0,10));setW("");setWt("");setBf("");};
   return (
     <div style={{height:"100%",overflowY:"auto",background:T.bg,padding:"22px 15px 90px"}}>
-      <p style={{color:T.navy,fontSize:22,fontWeight:700,margin:"0 0 3px"}}>Track Progress 📊</p>
-      <p style={{color:T.light,fontSize:12,margin:"0 0 14px"}}>Weekly weigh-ins — same time, same conditions.</p>
+      <div style={{paddingTop:"calc(22px + env(safe-area-inset-top))",marginBottom:18}}>
+        <div style={{marginBottom:12}}><LogoFull /></div>
+        <p style={{color:T.navy,fontSize:22,fontWeight:700,margin:"0 0 3px"}}>Track Progress 📊</p>
+        <p style={{color:T.light,fontSize:12,margin:"0 0 14px"}}>Weekly weigh-ins — same time, same conditions.</p>
+      </div>
       <Card style={{background:T.tealXL,border:`1px solid ${T.teal}20`}}>
         <Ttl>🎯 Your Targets</Ttl>
         {[["BMI target",plan.bmi.range],["Waist target",plan.waist.target],["Body fat (ripped)",plan.bodyFat.ripped],["Exercise goal","500 kcal daily 🔥"]].map(([l,v])=>(
@@ -832,7 +836,7 @@ function MindTab() {
     {i:"📅",t:"3-Week Challenge",c:T.gold,w:"From Day 1",h:"Habits form after 21 days of consistent repetition. Your subconscious autopilot switches on after 3 weeks."}];
   return (
     <div style={{height:"100%",overflowY:"auto",background:T.bg,paddingBottom:90}}>
-      <div style={{background:"linear-gradient(135deg,#2C1654,#6B3FA0)",padding:"28px 18px 22px",marginBottom:12}}>
+      <div style={{background:"linear-gradient(135deg,#2C1654,#6B3FA0)",padding:"28px 18px 22px",marginBottom:12,paddingTop:"calc(28px + env(safe-area-inset-top))"}}>
         <p style={{color:"rgba(255,255,255,0.4)",fontSize:10,letterSpacing:2,textTransform:"uppercase",margin:"0 0 4px"}}>Chapter 6 & 10</p>
         <p style={{color:"#fff",fontSize:24,fontWeight:700,margin:"0 0 14px"}}>The Mind 🧠</p>
         <div style={{background:"rgba(255,255,255,0.1)",borderRadius:12,padding:"12px 14px",border:"1px solid rgba(255,255,255,0.14)"}}>
@@ -889,8 +893,10 @@ function LearnTab() {
   ];
   return (
     <div style={{height:"100%",overflowY:"auto",background:T.bg,padding:"22px 15px 90px"}}>
-      <p style={{color:T.light,fontSize:10,letterSpacing:2,textTransform:"uppercase",margin:"0 0 3px"}}>2nd Edition 2026</p>
-      <p style={{color:T.navy,fontSize:22,fontWeight:700,margin:"0 0 14px"}}>The Book — 13 Chapters 📖</p>
+      <div className="sa-top" style={{paddingTop:"calc(22px + env(safe-area-inset-top))",marginBottom:18}}>
+        <div style={{marginBottom:12}}><LogoFull /></div>
+        <p style={{color:T.navy,fontSize:22,fontWeight:700,margin:"0 0 14px"}}>The Book — 13 Chapters 📖</p>
+      </div>
       {chs.map(ch=>(
         <div key={ch.n} onClick={()=>setExp(exp===ch.n?null:ch.n)} style={{background:T.surface,borderRadius:12,padding:"12px 14px",marginBottom:8,border:`1px solid ${T.border}`,cursor:"pointer"}}>
           <div style={{display:"flex",alignItems:"center",gap:9}}>
@@ -922,7 +928,11 @@ function CommunityTab() {
   const [lks,setLks]=useState(reviews.map(r=>r.lk));
   return (
     <div style={{height:"100%",overflowY:"auto",background:T.bg,padding:"22px 15px 90px"}}>
-      <p style={{color:T.navy,fontSize:22,fontWeight:700,margin:"0 0 3px"}}>Community 💛</p>
+      <div style={{paddingTop:"calc(24px + env(safe-area-inset-top))",marginBottom:20}}>
+        <div style={{marginBottom:14}}><LogoFull /></div>
+        <p style={{color:T.light,fontSize:11,fontFamily:"'DM Sans',sans-serif",letterSpacing:2,textTransform:"uppercase",margin:"0 0 4px"}}>Chapter 11</p>
+        <p style={{color:T.navy,fontSize:26,fontFamily:"'DM Sans',sans-serif",fontWeight:700,margin:"0 0 4px",letterSpacing:-0.5}}>Community</p>
+      </div>
       <p style={{color:T.mid,fontSize:13,fontStyle:"italic",margin:"0 0 14px"}}>"We get fit and unfit together." — Chapter 11</p>
       <div style={{display:"flex",gap:9,background:T.tealXL,borderRadius:11,padding:"9px 12px",marginBottom:14,border:`1px solid ${T.teal}20`}}>
         <span style={{fontSize:15}}>✅</span>
@@ -955,8 +965,9 @@ function SettingsPanel({gender, setGender, userProfile, setUserProfile, onClose}
   const inp={width:"100%",padding:"11px 12px",borderRadius:10,border:"1.5px solid rgba(255,255,255,0.25)",fontSize:13,background:"rgba(255,255,255,0.12)",color:"#fff",outline:"none",boxSizing:"border-box"};
   const doCalc=()=>{const a=parseFloat(age),w=parseFloat(wt),h=parseFloat(ht);if(!a||!w||!h||a<16||w<30||h<100){return;}setRes(calcProfile(gender,a,w,h,act));};
   return (
-    <div style={{padding:"14px 16px 80px"}}>
+    <div style={{padding:"14px 16px 80px",paddingTop:"calc(14px + env(safe-area-inset-top))"}}>
       <ToastMsg msg={toast}/>
+      <div style={{marginBottom:24}}><LogoFull /></div>
       <p style={{color:T.light,fontSize:11,fontWeight:700,letterSpacing:1,textTransform:"uppercase",margin:"0 0 10px"}}>Your Plan</p>
       <Card style={{background:T.tealXL,border:`1.5px solid ${T.teal}30`}}>
         <p style={{color:T.teal,fontSize:16,fontWeight:700,margin:"0 0 3px"}}>{plan.icon} {plan.label}'s Plan <span style={{background:userProfile?T.teal:T.navyMid,color:"#fff",fontSize:9,fontWeight:700,padding:"2px 7px",borderRadius:50,marginLeft:4}}>{userProfile?"✦ Personalised":"Standard"}</span></p>
@@ -1065,8 +1076,8 @@ export default function App() {
     ],
   }:base;
 
-  if(splash) return <div style={{maxWidth:390,margin:"0 auto",height:"100vh",overflow:"hidden"}}><Splash onDone={()=>setSplash(false)}/></div>;
-  if(!gender) return <div style={{maxWidth:390,margin:"0 auto",height:"100vh",overflowY:"auto"}}><Onboarding onSelect={(g,p)=>{setGender(g);if(p)setUserProfile(p);setActive("home");}}/></div>;
+  if(splash) return <div style={{width:"100%",height:"100vh",overflow:"hidden"}}><Splash onDone={()=>setSplash(false)}/></div>;
+  if(!gender) return <div style={{width:"100%",height:"100vh",overflowY:"auto"}}><Onboarding onSelect={(g,p)=>{setGender(g);if(p)setUserProfile(p);setActive("home");}}/></div>;
 
   const render=()=>{
     switch(active){
@@ -1084,20 +1095,26 @@ export default function App() {
   };
 
   return (
-    <div style={{maxWidth:390,margin:"0 auto",height:"100vh",display:"flex",flexDirection:"column",background:T.bg,position:"relative",overflow:"hidden"}}>
+    <div style={{width:"100%",height:"100vh",display:"flex",flexDirection:"column",background:T.bg,position:"relative",overflow:"hidden"}}>
+      <style>{`
+        .sa-bot  { padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)) !important; }
+        .sa-cont { height: calc(100vh - 72px - env(safe-area-inset-bottom, 0px)) !important; }
+        .sa-draw { bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important; }
+        .sa-top  { top: max(14px, env(safe-area-inset-top, 14px)) !important; }
+      `}</style>
       {/* Gear icon */}
-      <div style={{position:"absolute",top:12,right:12,zIndex:200}}>
+      <div className="sa-top" style={{position:"absolute",right:12,zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",width:36,height:36}}>
         <button onClick={()=>setSettings(true)} style={{background:"rgba(255,255,255,0.95)",border:`1px solid ${T.border}`,borderRadius:50,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,color:T.mid,cursor:"pointer",boxShadow:"0 2px 8px rgba(15,45,74,0.08)"}}>⚙</button>
       </div>
 
       {/* Content */}
-      <div style={{flex:1,overflow:"hidden"}}>{render()}</div>
+      <div className="sa-cont" style={{flex:1,overflow:"hidden"}}>{render()}</div>
 
       {/* More drawer */}
       {more&&(
         <>
           <div onClick={()=>setMore(false)} style={{position:"absolute",inset:0,zIndex:98,background:"rgba(15,45,74,0.42)",backdropFilter:"blur(3px)"}}/>
-          <div style={{position:"absolute",bottom:66,left:0,right:0,zIndex:99,background:"#fff",borderRadius:"22px 22px 0 0",borderTop:`1px solid ${T.border}`,padding:"13px 18px 20px",boxShadow:"0 -6px 28px rgba(15,45,74,0.14)"}}>
+          <div className="sa-draw" style={{left:0,right:0,zIndex:99,background:"#fff",borderRadius:"22px 22px 0 0",borderTop:`1px solid ${T.border}`,padding:"13px 18px 20px",boxShadow:"0 -6px 28px rgba(15,45,74,0.14)"}}>
             <div style={{width:38,height:4,borderRadius:99,background:T.border,margin:"0 auto 14px"}}/>
             <p style={{color:T.light,fontSize:11,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",margin:"0 0 11px"}}>More</p>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:9}}>
@@ -1113,7 +1130,7 @@ export default function App() {
       )}
 
       {/* Bottom nav — always visible */}
-      <div style={{background:"rgba(255,255,255,0.98)",backdropFilter:"blur(24px)",borderTop:`1px solid ${T.border}`,padding:"5px 0 14px",flexShrink:0,zIndex:100}}>
+      <div className="sa-bot" style={{background:"rgba(255,255,255,0.98)",backdropFilter:"blur(24px)",borderTop:`1px solid ${T.border}`,padding:"5px 0",flexShrink:0,zIndex:100}}>
         <div style={{display:"flex",padding:"0 3px"}}>
           {PT.map(t=>{const ia=active===t.id;const ac=TC[t.id]||T.teal;return(
             <button key={t.id} onClick={()=>{setActive(t.id);setMore(false);}} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:2,border:"none",background:"transparent",cursor:"pointer",padding:"4px 1px",minWidth:0}}>
@@ -1137,7 +1154,13 @@ export default function App() {
       {settings&&(
         <>
           <div onClick={()=>setSettings(false)} style={{position:"absolute",inset:0,zIndex:300,background:"rgba(15,45,74,0.45)",backdropFilter:"blur(4px)"}}/>
-          <div style={{position:"absolute",bottom:66,left:0,right:0,zIndex:301,background:T.surface,borderRadius:"24px 24px 0 0",borderTop:`1px solid ${T.border}`,boxShadow:"0 -8px 36px rgba(15,45,74,0.18)",maxHeight:"88%",display:"flex",flexDirection:"column"}}>
+          <div className="sa-draw" style={{left:0,right:0,zIndex:301,background:T.surface,borderRadius:"24px 24px 0 0",borderTop:`1px solid ${T.border}`,boxShadow:"0 -8px 36px rgba(15,45,74,0.18)",maxHeight:"88%",display:"flex",flexDirection:"column"}}>
+            <style>{`
+              .sa-bot  { padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)) !important; }
+              .sa-cont { height: calc(100vh - 72px - env(safe-area-inset-bottom, 0px)) !important; }
+              .sa-draw { bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important; }
+              .sa-top  { top: max(14px, env(safe-area-inset-top, 14px)) !important; }
+            `}</style>
             <div style={{flexShrink:0,padding:"12px 18px 0"}}>
               <div style={{width:38,height:4,borderRadius:99,background:T.border,margin:"0 auto 12px"}}/>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
