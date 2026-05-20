@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useGender, useUserProfile, useStreak, useCaloriesFood, useCaloriesExercise, useChallengePhase, useChallengeStarted, useChallengeChecked, useTrackEntries, useCoachMessages, useCommunityLiked } from "./services/storage";
+import { SafeArea } from "capacitor-plugin-safe-area";
 
 const T = {
   bg:"#F4F6F9", surface:"#FFFFFF", surfaceAlt:"#F8FAFC",
