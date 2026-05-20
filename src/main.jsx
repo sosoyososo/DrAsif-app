@@ -17,7 +17,7 @@ const initSafeArea = async () => {
   const { insets } = await SafeArea.getSafeAreaInsets();
   for (const [key, value] of Object.entries(insets)) {
     document.documentElement.style.setProperty(
-      `--safe-area-inset-${key}`,
+      `--sa-${key}`,
       `${value}px`
     );
   }
@@ -25,7 +25,7 @@ const initSafeArea = async () => {
   SafeArea.addListener("safeAreaChanged", ({ insets }) => {
     for (const [key, value] of Object.entries(insets)) {
       document.documentElement.style.setProperty(
-        `--safe-area-inset-${key}`,
+        `--sa-${key}`,
         `${value}px`
       );
     }
