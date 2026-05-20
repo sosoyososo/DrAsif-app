@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 
 // ─── STORAGE_KEYS ─────────────────────────────────────────────────────────────
 
@@ -84,12 +84,14 @@ const StorageService = {
 
 function useStorage(key, defaultValue) {
   const [value, setValue] = useState(() => StorageService.load(key, defaultValue));
+  const valueRef = useRef(value);
+  valueRef.current = value;
 
   const setAndPersist = useCallback((next) => {
-    const resolved = next instanceof Function ? next(value) : next;
+    const resolved = next instanceof Function ? next(valueRef.current) : next;
     setValue(resolved);
     StorageService.save(key, resolved);
-  }, [key, value]);
+  }, [key]);
 
   return [value, setAndPersist];
 }
