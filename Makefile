@@ -1,5 +1,11 @@
 .PHONY: ios-list ios-dev android-list android-dev
 
+# Android SDK configuration
+export ANDROID_HOME := $(HOME)/Library/Android/sdk
+export ANDROID_SDK_ROOT := $(HOME)/Library/Android/sdk
+export JAVA_HOME := $(shell /usr/libexec/java_home -v 21 2>/dev/null)
+export PATH := $(ANDROID_HOME)/platform-tools:$(ANDROID_HOME)/cmdline-tools/latest/bin:$(PATH)
+
 # List available iOS targets
 ios-list:
 	npx cap run ios --list
