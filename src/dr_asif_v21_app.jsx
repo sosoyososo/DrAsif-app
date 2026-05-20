@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useGender, useUserProfile, useStreak, useCaloriesFood, useCaloriesExercise, useChallengePhase, useChallengeStarted, useChallengeChecked, useTrackEntries, useCoachMessages, useCommunityLiked } from "./services/storage";
 
 const T = {
   bg:"#F4F6F9", surface:"#FFFFFF", surfaceAlt:"#F8FAFC",
@@ -321,7 +322,7 @@ function HomeTab({plan, streakDays, setStreakDays, setShowSettings}) {
 // ── CALORIES ──────────────────────────────────────────────────────────────────
 function CaloriesTab({plan}) {
   const lim=plan.presetMeals;
-  const [food,setFood]=useState([]); const [ex,setEx]=useState([]);
+  const [food,setFood]=useCaloriesFood([]); const [ex,setEx]=useCaloriesExercise([]);
   const [nm,setNm]=useState(""); const [nk,setNk]=useState(""); const [sm,setSm]=useState(false);
   const [mins,setMins]=useState("30"); const [sex,setSex]=useState(false);
   const [toast,setToast]=useState("");
@@ -665,9 +666,9 @@ function FoodTab({plan}) {
 
 // ── CHALLENGE ─────────────────────────────────────────────────────────────────
 function ChallengeTab({plan}) {
-  const [phase,setPhase]=useState("week3");
-  const [started,setStarted]=useState(false);
-  const [checked,setChecked]=useState({});
+  const [phase,setPhase]=useChallengePhase("week3");
+  const [started,setStarted]=useChallengeStarted(false);
+  const [checked,setChecked]=useChallengeChecked({});
   const cfg=PHASES[phase];
   const dk=new Date().toISOString().split("T")[0];
   const tc=checked[dk]||{};
@@ -737,7 +738,7 @@ function ChallengeTab({plan}) {
 
 // ── COACH ─────────────────────────────────────────────────────────────────────
 function CoachTab({plan, gender}) {
-  const [msgs,setMsgs]=useState([{role:"assistant",text:`Hello! 🌿 I'm your AI Coach, trained on all 13 chapters of Dr. Asif Mushtaq's book.\n\nYou're on the ${plan.icon} ${plan.label}'s Plan:\n• Diet target: ${plan.presetMeals.toLocaleString()} kcal/day\n• Exercise goal: 500 kcal daily 🔥\n• Total deficit: 1,000 kcal/day → ≈ 1 kg fat/week\n\n"If I can do it, you can do it too." — Dr. Mushtaq\n\nWhat would you like help with?`}]);
+  const [msgs,setMsgs]=useCoachMessages([{role:"assistant",text:`Hello! 🌿 I'm your AI Coach, trained on all 13 chapters of Dr. Asif Mushtaq's book.\n\nYou're on the ${plan.icon} ${plan.label}'s Plan:\n• Diet target: ${plan.presetMeals.toLocaleString()} kcal/day\n• Exercise goal: 500 kcal daily 🔥\n• Total deficit: 1,000 kcal/day → ≈ 1 kg fat/week\n\n"If I can do it, you can do it too." — Dr. Mushtaq\n\nWhat would you like help with?`}]);
   const [inp,setInp]=useState(""); const [loading,setLoading]=useState(false);
   const ref=useRef(null);
   useEffect(()=>{if(ref.current)ref.current.scrollTop=ref.current.scrollHeight;},[msgs,loading]);
@@ -781,7 +782,7 @@ function CoachTab({plan, gender}) {
 
 // ── MORE TABS ─────────────────────────────────────────────────────────────────
 function TrackTab({plan, gender}) {
-  const [entries,setEntries]=useState([]);
+  const [entries,setEntries]=useTrackEntries([]);
   const [w,setW]=useState(""); const [wt,setWt]=useState(""); const [bf,setBf]=useState("");
   const add=()=>{if(!w&&!wt)return;setEntries(p=>[{date:new Date().toLocaleDateString("en-GB",{day:"numeric",month:"short"}),w,wt,bf},...p].slice(0,10));setW("");setWt("");setBf("");};
   return (
@@ -921,7 +922,7 @@ function CommunityTab() {
     {name:"Dr Barrie Stevenson",cred:"NHS England",av:"B",c:T.sage,out:"Life-changing",text:"Life changing! Clear and simple system for losing weight and building muscle. Built on a strong scientific foundation.",lk:195},
     {name:"Dr Simon Williams",cred:"General Practitioner",av:"S",c:T.gold,out:"Sustainable lifestyle",text:"Asif offers guidance and hope — not just weight loss but peace of mind. This book offers a sustainable lifestyle choice.",lk:163},
   ];
-  const [liked,setLiked]=useState(reviews.map(()=>false));
+  const [liked,setLiked]=useCommunityLiked(reviews.map(()=>false));
   const [lks,setLks]=useState(reviews.map(r=>r.lk));
   return (
     <div style={{height:"100%",overflowY:"auto",background:T.bg,padding:"22px 15px 90px"}}>
@@ -1051,12 +1052,12 @@ const TC={home:T.teal,calories:T.teal,food:T.sage,challenge:"#6B3FA0",coach:T.te
 
 export default function App() {
   const [splash,setSplash]=useState(true);
-  const [gender,setGender]=useState(null);
+  const [gender,setGender]=useGender(null);
   const [active,setActive]=useState("home");
-  const [streak,setStreak]=useState(Array(7).fill(false));
+  const [streak,setStreak]=useStreak(Array(7).fill(false));
   const [settings,setSettings]=useState(false);
   const [more,setMore]=useState(false);
-  const [userProfile,setUserProfile]=useState(null);
+  const [userProfile,setUserProfile]=useUserProfile(null);
 
   const base=gender?PLANS[gender]:null;
   const plan=base&&userProfile?{
