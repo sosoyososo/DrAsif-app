@@ -1118,10 +1118,10 @@ export default function App() {
   return (
     <div style={{width:"100%",height:"100vh",display:"flex",flexDirection:"column",background:T.bg,position:"relative",overflow:"hidden"}}>
       <style>{`
-        .sa-bot  { padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)) !important; }
-        .sa-cont { height: calc(100vh - 72px - env(safe-area-inset-bottom, 0px)) !important; }
-        .sa-draw { bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important; }
-        .sa-top  { top: max(14px, env(safe-area-inset-top, 14px)) !important; }
+        .sa-bot  { padding-bottom: max(16px, var(--safe-area-inset-bottom, 16px)) !important; }
+        .sa-cont { height: calc(100vh - 72px - var(--safe-area-inset-bottom, 0px)) !important; }
+        .sa-draw { bottom: calc(72px + var(--safe-area-inset-bottom, 0px)) !important; }
+        .sa-top  { top: max(14px, var(--safe-area-inset-top, 14px)) !important; }
       `}</style>
       {/* Gear icon */}
       <div className="sa-top" style={{position:"absolute",right:12,zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",width:36,height:36}}>
@@ -1177,10 +1177,10 @@ export default function App() {
           <div onClick={()=>setSettings(false)} style={{position:"absolute",inset:0,zIndex:300,background:"rgba(15,45,74,0.45)",backdropFilter:"blur(4px)"}}/>
           <div className="sa-draw" style={{left:0,right:0,zIndex:301,background:T.surface,borderRadius:"24px 24px 0 0",borderTop:`1px solid ${T.border}`,boxShadow:"0 -8px 36px rgba(15,45,74,0.18)",maxHeight:"88%",display:"flex",flexDirection:"column"}}>
             <style>{`
-              .sa-bot  { padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)) !important; }
-              .sa-cont { height: calc(100vh - 72px - env(safe-area-inset-bottom, 0px)) !important; }
-              .sa-draw { bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important; }
-              .sa-top  { top: max(14px, env(safe-area-inset-top, 14px)) !important; }
+              .sa-bot  { padding-bottom: max(16px, var(--safe-area-inset-bottom, 16px)) !important; }
+              .sa-cont { height: calc(100vh - 72px - var(--safe-area-inset-bottom, 0px)) !important; }
+              .sa-draw { bottom: calc(72px + var(--safe-area-inset-bottom, 0px)) !important; }
+              .sa-top  { top: max(14px, var(--safe-area-inset-top, 14px)) !important; }
             `}</style>
             <div style={{flexShrink:0,padding:"12px 18px 0"}}>
               <div style={{width:38,height:4,borderRadius:99,background:T.border,margin:"0 auto 12px"}}/>
