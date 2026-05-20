@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { useGender, useUserProfile, useStreak, useCaloriesFood, useCaloriesExercise, useChallengePhase, useChallengeStarted, useChallengeChecked, useTrackEntries, useCoachMessages, useCommunityLiked } from "./services/storage";
-import { SafeArea } from "capacitor-plugin-safe-area";
 
 const T = {
   bg:"#F4F6F9", surface:"#FFFFFF", surfaceAlt:"#F8FAFC",
@@ -1059,30 +1058,6 @@ export default function App() {
   const [settings,setSettings]=useState(false);
   const [more,setMore]=useState(false);
   const [userProfile,setUserProfile]=useUserProfile(null);
-
-  // Initialize safe area plugin
-  useEffect(() => {
-    const updateSafeArea = async () => {
-      const { insets } = await SafeArea.getSafeAreaInsets();
-      for (const [key, value] of Object.entries(insets)) {
-        document.documentElement.style.setProperty(
-          `--safe-area-inset-${key}`,
-          `${value}px`
-        );
-      }
-    };
-
-    updateSafeArea();
-
-    SafeArea.addListener("safeAreaChanged", ({ insets }) => {
-      for (const [key, value] of Object.entries(insets)) {
-        document.documentElement.style.setProperty(
-          `--safe-area-inset-${key}`,
-          `${value}px`
-        );
-      }
-    });
-  }, []);
 
   const base=gender?PLANS[gender]:null;
   const plan=base&&userProfile?{
