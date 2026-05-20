@@ -8,7 +8,7 @@ A single-file React application — the "Lose Weight Smarter" companion app by D
 
 ## Architecture
 
-Single-file SPA (`lose_weight_smarter_v19.jsx`) with inline styles, no CSS modules or external stylesheets. Fonts loaded from Google Fonts (`DM Sans`, `Cormorant Garamond`) via `<link>` tags.
+Single-file SPA (`dr_asif_v21_app.jsx`) with inline styles, no CSS modules or external stylesheets. Fonts loaded from Google Fonts (`DM Sans`, `Cormorant Garamond`) via `<link>` tags.
 
 ### Component Tree
 
@@ -70,6 +70,34 @@ make ios-dev TARGET=00008030-00123456    # build → sync → run (specific devi
 
 No test suite, no linting config.
 
+### Android Capacitor (Makefile)
+
+```bash
+make android-list                          # list available Android targets
+make android-dev                           # build → sync → run (default device)
+```
+
+### UI Testing with Screenshots
+
+When verifying UI changes on iOS and Android simulators:
+
+**iOS Screenshot:**
+```bash
+xcrun simctl io "iPhone 16 Pro" screenshot /tmp/ios-screenshot.png
+open /tmp/ios-screenshot.png
+```
+
+**Android Screenshot:**
+```bash
+~/Library/Android/sdk/platform-tools/adb -s 127.0.0.1:6562 exec-out screencap -p > /tmp/android-screenshot.png
+open /tmp/android-screenshot.png
+```
+
+Note: Android device ID may vary. Check with:
+```bash
+~/Library/Android/sdk/platform-tools/adb devices
+```
+
 ### Adding Features
 
 Most changes involve:
@@ -85,3 +113,13 @@ Most changes involve:
 - Functional components with explicit prop destructuring
 - Section comments with `// ───` separator pattern
 - No TypeScript, no PropTypes
+
+### Capacitor Configuration
+
+`capacitor.config.json` contains plugin settings for:
+- **StatusBar**: style, backgroundColor, overlaysWebView
+- **SplashScreen**: launchAutoHide, backgroundColor, androidScaleType, showSpinner
+
+StatusBar style options: `"Light"` (白色图标/文字) or `"Dark"` (黑色图标/文字)
+
+On Android, status bar configuration is handled via Capacitor plugins. Native Android theme modifications go in `android/app/src/main/res/values/styles.xml`.
