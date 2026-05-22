@@ -1094,7 +1094,7 @@ export default function App() {
     <div style={{width:"100%",height:"100vh",display:"flex",flexDirection:"column",background:T.bg,position:"relative",overflow:"hidden"}}>
       {/* Gear icon */}
       <div style={{position:"absolute",right:12,top:"var(--sa-top)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",width:36,height:36}}>
-        <button onClick={()=>setSettings(true)} style={{background:"rgba(255,255,255,0.95)",border:`1px solid ${T.border}`,borderRadius:50,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,color:T.mid,cursor:"pointer",boxShadow:"0 2px 8px rgba(15,45,74,0.08)"}}>⚙</button>
+        <button onClick={() => { setSettings(true); setMore(false); }} style={{background:"rgba(255,255,255,0.95)",border:`1px solid ${T.border}`,borderRadius:50,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,color:T.mid,cursor:"pointer",boxShadow:"0 2px 8px rgba(15,45,74,0.08)"}}>⚙</button>
       </div>
 
       {/* Content */}
@@ -1119,6 +1119,26 @@ export default function App() {
         </>
       )}
 
+
+      {/* Settings overlay — slides up, tabs ALWAYS visible */}
+      {settings&&(
+        <>
+          <div onClick={()=>setSettings(false)}  style={{position:"absolute",inset:0,zIndex:98,background:"rgba(15,45,74,0.42)",backdropFilter:"blur(3px)"}}/>
+          <div style={{left:0,right:0,zIndex:99,background:T.surface,borderRadius:"24px 24px 0 0",borderTop:`1px solid ${T.border}`,boxShadow:"0 -8px 36px rgba(15,45,74,0.18)",maxHeight:"75%",display:"flex",flexDirection:"column"}}>
+              <div style={{flexShrink:0,padding:"12px 18px 0"}}>
+                <div style={{width:38,height:4,borderRadius:99,background:T.border,margin:"0 auto 12px"}}/>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
+                  <p style={{color:T.navy,fontSize:18,fontWeight:700,margin:0}}>Settings</p>
+                  <button onClick={()=>setSettings(false)} style={{background:T.surfaceAlt,border:`1px solid ${T.border}`,borderRadius:50,padding:"7px 16px",fontSize:13,color:T.mid,cursor:"pointer",fontWeight:600}}>Done ✓</button>
+                </div>
+              </div>
+              <div style={{overflowY:"auto",flex:1}}>
+                <SettingsPanel gender={gender} setGender={setGender} userProfile={userProfile} setUserProfile={setUserProfile} onClose={()=>setSettings(false)}/>
+              </div>
+            </div>
+        </>
+      )}
+
       {/* Bottom nav — always visible */}
       <div  style={{background:"rgba(255,255,255,0.98)",backdropFilter:"blur(24px)",borderTop:`1px solid ${T.border}`,padding:"5px 0",flexShrink:0,zIndex:100, paddingBottom:"var(--sa-bottom)"}}>
         <div style={{display:"flex",padding:"0 3px"}}>
@@ -1131,7 +1151,7 @@ export default function App() {
           );})}
           {/* More button */}
           {(()=>{const mia=MT.some(t=>t.id===active);return(
-            <button onClick={()=>setMore(m=>!m)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:2,border:"none",background:"transparent",cursor:"pointer",padding:"4px 1px",minWidth:0}}>
+            <button onClick={() => { setMore(m => !m); setSettings(false); }} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:2,border:"none",background:"transparent",cursor:"pointer",padding:"4px 1px",minWidth:0}}>
               <div style={{width:42,height:27,borderRadius:9,background:mia||more?`${T.navyMid}18`:"transparent",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,transition:"background 0.2s",letterSpacing:1}}>{more?"✕":"•••"}</div>
               <span style={{fontSize:10,color:mia||more?T.navyMid:T.light,fontWeight:mia?700:400,lineHeight:1.2}}>More</span>
               {mia&&<div style={{width:16,height:2.5,borderRadius:99,background:T.navyMid,marginTop:1}}/>}
@@ -1140,24 +1160,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* Settings overlay — slides up, tabs ALWAYS visible */}
-      {settings&&(
-        <>
-          <div onClick={()=>setSettings(false)} style={{position:"absolute",inset:0,zIndex:300,background:"rgba(15,45,74,0.45)",backdropFilter:"blur(4px)"}}/>
-          <div style={{left:0,right:0,zIndex:301,background:T.surface,borderRadius:"24px 24px 0 0",borderTop:`1px solid ${T.border}`,boxShadow:"0 -8px 36px rgba(15,45,74,0.18)",maxHeight:"88%",display:"flex",flexDirection:"column"}}>
-            <div style={{flexShrink:0,padding:"12px 18px 0"}}>
-              <div style={{width:38,height:4,borderRadius:99,background:T.border,margin:"0 auto 12px"}}/>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
-                <p style={{color:T.navy,fontSize:18,fontWeight:700,margin:0}}>Settings</p>
-                <button onClick={()=>setSettings(false)} style={{background:T.surfaceAlt,border:`1px solid ${T.border}`,borderRadius:50,padding:"7px 16px",fontSize:13,color:T.mid,cursor:"pointer",fontWeight:600}}>Done ✓</button>
-              </div>
-            </div>
-            <div style={{overflowY:"auto",flex:1}}>
-              <SettingsPanel gender={gender} setGender={setGender} userProfile={userProfile} setUserProfile={setUserProfile} onClose={()=>setSettings(false)}/>
-            </div>
-          </div>
-        </>
-      )}
+      
     </div>
   );
 }
