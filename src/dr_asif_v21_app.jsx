@@ -1124,7 +1124,7 @@ export default function App() {
       {settings&&(
         <>
           <div onClick={()=>setSettings(false)}  style={{position:"absolute",inset:0,zIndex:98,background:"rgba(15,45,74,0.42)",backdropFilter:"blur(3px)"}}/>
-          <div style={{left:0,right:0,zIndex:99,background:T.surface,borderRadius:"24px 24px 0 0",borderTop:`1px solid ${T.border}`,boxShadow:"0 -8px 36px rgba(15,45,74,0.18)",maxHeight:"75%",display:"flex",flexDirection:"column"}}>
+          <div style={{left:0,right:0,zIndex:99,background:T.surface,borderRadius:"24px 24px 0 0",borderTop:`1px solid ${T.border}`,boxShadow:"0 -8px 36px rgba(15,45,74,0.18)",maxHeight:"calc(100vh - var(--sa-top, 0px) - 36px - var(--sa-bottom, 0px) - 58px - 10px)",display:"flex",flexDirection:"column"}}>
               <div style={{flexShrink:0,padding:"12px 18px 0"}}>
                 <div style={{width:38,height:4,borderRadius:99,background:T.border,margin:"0 auto 12px"}}/>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
