@@ -1149,7 +1149,7 @@ export default function App() {
                 </div>
               </div>
               <div style={{overflowY:"auto",flex:1}}>
-                <SettingsPanel gender={gender} setGender={setGender} userProfile={userProfile} setUserProfile={setUserProfile} onClose={()=>setSettings(false)} onDeleteAll={()=>{StorageService.clearAll();setGender(null);setUserProfile(null);setSettings(false);}}/>
+                <SettingsPanel gender={gender} setGender={setGender} userProfile={userProfile} setUserProfile={setUserProfile} onClose={()=>setSettings(false)} onDeleteAll={()=>{StorageService.clearAll();setStreak(Array(7).fill(false));setGender(null);setUserProfile(null);setSettings(false);}}/>
               </div>
             </div>
         </>
