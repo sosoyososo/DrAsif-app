@@ -8,32 +8,15 @@ A single-file React application — the "Lose Weight Smarter" companion app by D
 
 ## Architecture
 
-Single-file SPA (`dr_asif_v21_app.jsx`) with inline styles, no CSS modules or external stylesheets. Fonts loaded from Google Fonts (`DM Sans`, `Cormorant Garamond`) via `<link>` tags.
-
-### Component Tree
-
-```
-App (export default)
-├── SplashScreen — full-screen brand intro
-├── OnboardingScreen — gender selection + optional personalised plan calculator
-├── HomeTab — daily plan, check-in, meal overview, protein calculator
-├── ChallengeTab — 12-week ABS-X challenge with phase tracking, daily logging
-├── CaloriesTab — food/exercise log with calorie tracking
-├── TrackTab — weight/waist/photo progress charts (inline SVG)
-├── CoachTab — motivational guidance, principles, tips
-├── LearnTab — chapter summaries
-├── CommunityTab — verified reviews, community guidelines
-├── MindTab — mindset, habit formation, quiz
-├── SettingsScreen — profile editing, gender toggle, data management
-└── Shared UI components: Card, SectionTitle, Pill, Modal, InfoRow, LogoMark, LogoFull
-```
+Single-file SPA (`src/dr_asif_v21_app.jsx`, ~1166 lines) with inline styles. See [`docs/architecture.md`](docs/architecture.md) for full component tree, line numbers, state inventory, data flow, and StorageService API reference.
 
 ### Data Layer
 
-- **Meal Plans**: `PLANS` object (lines 128-237) — male/female book-based meal plans with exact calories, macros, and Dr. Asif's commentary
-- **Personalised Calculator**: `PersonalisedPlanCalculator` uses Mifflin-St Jeor equation for BMR, activity multipliers for custom targets
-- **Persistence**: `lsGet`/`lsSet` wrappers for `localStorage` — each state slice syncs via `useEffect`
-- **State Management**: All state lives in `App` and is passed down via props (no Context, no external state library)
+- **Meal Plans**: `PLANS` object — male/female book-based meal plans with exact calories and macros
+- **Personalised Calculator**: `CalcForm` uses Mifflin-St Jeor equation for BMR, activity multipliers for custom targets
+- **Persistence**: `StorageService` in `src/services/storage.js` with `save`/`load`/`clearAll`/`exportAll`/`importAll`
+- **State Management**: `useStorage` hook wraps `useState` + auto-persist. All state lives in `App` and is passed down via props (no Context, no external state library)
+- **Storage keys**: `user.gender`, `user.profile`, `streak.weekly`, `calories.*`, `challenge.*`, `track.entries`, `coach.messages`, `community.liked`
 
 ### Design Tokens
 
