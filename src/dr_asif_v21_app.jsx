@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useGender, useUserProfile, useStreak, useCaloriesFood, useCaloriesExercise, useChallengePhase, useChallengeStarted, useChallengeChecked, useTrackEntries, useCoachMessages, useCommunityLiked } from "./services/storage";
+import { useGender, useUserProfile, useStreak, useCaloriesFood, useCaloriesExercise, useChallengePhase, useChallengeStarted, useChallengeChecked, useTrackEntries, useCoachMessages, useCommunityLiked, StorageService } from "./services/storage";
 
 const T = {
   bg:"#F4F6F9", surface:"#FFFFFF", surfaceAlt:"#F8FAFC",
@@ -954,7 +954,7 @@ function CommunityTab() {
 }
 
 // ── SETTINGS ──────────────────────────────────────────────────────────────────
-function SettingsPanel({gender, setGender, userProfile, setUserProfile, onClose}) {
+function SettingsPanel({gender, setGender, userProfile, setUserProfile, onClose, onDeleteAll}) {
   const plan=PLANS[gender];
   const [sc,setSc]=useState(false); const [conf,setConf]=useState(null); const [toast,setToast]=useState("");
   const [age,setAge]=useState(""); const [wt,setWt]=useState(""); const [ht,setHt]=useState(""); const [act,setAct]=useState("1.375"); const [res,setRes]=useState(null);
@@ -1040,6 +1040,22 @@ function SettingsPanel({gender, setGender, userProfile, setUserProfile, onClose}
         <p style={{color:T.navy,fontSize:11,fontWeight:700,margin:"0 0 6px"}}>⚕️ Medical Disclaimer</p>
         <p style={{color:T.mid,fontSize:12,lineHeight:1.65,margin:"0 0 7px"}}>For general wellness guidance only — not a substitute for professional medical advice. Always consult your GP before significant health changes.</p>
         <p style={{color:T.light,fontSize:11,margin:0}}>© 2026 Dr. Asif Mushtaq · All rights reserved</p>
+      </Card>
+      {/* Delete My Data */}
+      <Card>
+        <Ttl>Data</Ttl>
+        {conf!=="del" ? (
+          <button onClick={() => setConf("del")} style={{width:"100%",padding:"11px 0",borderRadius:11,border:`1.5px solid ${T.alert}`,background:T.surface,color:T.alert,fontSize:13,fontWeight:600,cursor:"pointer"}}>Delete My Data</button>
+        ) : (
+          <div style={{background:T.alertL,borderRadius:11,padding:13,border:`1px solid ${T.alert}25`}}>
+            <p style={{color:T.navy,fontSize:13,fontWeight:600,margin:"0 0 7px",textAlign:"center"}}>Delete All Your Data?</p>
+            <p style={{color:T.mid,fontSize:12,margin:"0 0 12px",textAlign:"center",lineHeight:1.5}}>This will permanently delete all your progress, logs, challenge records, messages, and settings. This action cannot be undone.</p>
+            <div style={{display:"flex",gap:7}}>
+              <button onClick={() => setConf(null)} style={{flex:1,padding:"10px 0",borderRadius:9,border:`1px solid ${T.border}`,background:T.surface,color:T.mid,fontSize:13,cursor:"pointer"}}>Cancel</button>
+              <button onClick={() => { onDeleteAll(); }} style={{flex:1,padding:"10px 0",borderRadius:9,border:"none",background:T.alert,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>Yes, Delete All</button>
+            </div>
+          </div>
+        )}
       </Card>
     </div>
   );
@@ -1133,7 +1149,7 @@ export default function App() {
                 </div>
               </div>
               <div style={{overflowY:"auto",flex:1}}>
-                <SettingsPanel gender={gender} setGender={setGender} userProfile={userProfile} setUserProfile={setUserProfile} onClose={()=>setSettings(false)}/>
+                <SettingsPanel gender={gender} setGender={setGender} userProfile={userProfile} setUserProfile={setUserProfile} onClose={()=>setSettings(false)} onDeleteAll={()=>{StorageService.clearAll();setGender(null);setUserProfile(null);setSettings(false);}}/>
               </div>
             </div>
         </>
