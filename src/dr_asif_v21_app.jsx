@@ -989,19 +989,26 @@ function SettingsPanel({gender, setGender, userProfile, setUserProfile, onClose,
           <button onClick={()=>{setSc(s=>!s);setConf(null);setRes(null);}} style={{width:"100%",padding:"12px 0",borderRadius:11,border:"none",background:`linear-gradient(135deg,${T.teal},${T.navyMid})`,color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer"}}>
             {sc?"↑ Close calculator":userProfile?"🔄 Recalculate my plan":"✨ Calculate personalised plan"}
           </button>
-          {userProfile&&!sc&&(!conf?
-            <button onClick={()=>setConf("std")} style={{width:"100%",padding:"11px 0",borderRadius:11,border:`1.5px solid ${T.border}`,background:T.surface,color:T.mid,fontSize:13,fontWeight:600,cursor:"pointer"}}>Switch to standard {plan.label}'s plan ({plan.presetMeals.toLocaleString()} kcal)</button>:
-            <div style={{background:T.surfaceAlt,borderRadius:11,padding:13,border:`1px solid ${T.border}`}}>
-              <p style={{color:T.navy,fontSize:13,fontWeight:600,margin:"0 0 7px",textAlign:"center"}}>Switch to standard plan?</p>
-              <div style={{display:"flex",gap:7}}><button onClick={()=>setConf(null)} style={{flex:1,padding:"10px 0",borderRadius:9,border:`1px solid ${T.border}`,background:T.surface,color:T.mid,fontSize:13,cursor:"pointer"}}>Cancel</button><button onClick={()=>{setUserProfile(null);setConf(null);showT(`✓ Standard plan · Tap Done to continue`);}} style={{flex:1,padding:"10px 0",borderRadius:9,border:"none",background:T.navy,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>Yes, switch</button></div>
-            </div>
-          )}
+          
+          {userProfile && <>
+            {!sc && <button onClick={() => setConf("std")} style={{ width: "100%", padding: "11px 0", borderRadius: 11, border: `1.5px solid ${T.border}`, background: T.surface, color: T.mid, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Switch to standard {plan.label}'s plan ({plan.presetMeals.toLocaleString()} kcal)</button>}
+            {conf === "std" && <div style={{ background: T.surfaceAlt, borderRadius: 11, padding: 13, border: `1px solid ${T.border}` }}>
+              <p style={{ color: T.navy, fontSize: 13, fontWeight: 600, margin: "0 0 7px", textAlign: "center" }}>Switch to standard plan?</p>
+              <div style={{ display: "flex", gap: 7 }}>
+                <button onClick={() => setConf(null)} style={{ flex: 1, padding: "10px 0", borderRadius: 9, border: `1px solid ${T.border}`, background: T.surface, color: T.mid, fontSize: 13, cursor: "pointer" }}>Cancel</button>
+                <button onClick={() => { setUserProfile(null); setConf(null); showT(`✓ Standard plan · Tap Done to continue`); }} style={{ flex: 1, padding: "10px 0", borderRadius: 9, border: "none", background: T.navy, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Yes, switch</button>
+              </div>
+            </div>}
+            </>
+          }
+
           {!sc&&<button onClick={()=>setConf("sw")} style={{width:"100%",padding:"11px 0",borderRadius:11,border:`1.5px solid ${T.border}`,background:T.surface,color:T.mid,fontSize:13,cursor:"pointer"}}>Switch Men's / Women's plan</button>}
           {conf==="sw"&&<div style={{background:T.alertL,borderRadius:11,padding:13,border:`1px solid ${T.alert}25`}}>
             <p style={{color:T.navy,fontSize:13,fontWeight:600,margin:"0 0 7px",textAlign:"center"}}>Switch plan?</p>
             <p style={{color:T.mid,fontSize:12,margin:"0 0 11px",textAlign:"center",lineHeight:1.5}}>Takes you back to plan selection. Your progress and streak are kept.</p>
             <div style={{display:"flex",gap:7}}><button onClick={()=>setConf(null)} style={{flex:1,padding:"10px 0",borderRadius:9,border:`1px solid ${T.border}`,background:T.surface,color:T.mid,fontSize:13,cursor:"pointer"}}>Cancel</button><button onClick={()=>{setUserProfile(null);setGender(null);onClose();}} style={{flex:1,padding:"10px 0",borderRadius:9,border:"none",background:T.alert,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer"}}>Yes</button></div>
           </div>}
+          
           {/* Inline calculator */}
           {sc&&<div style={{padding:14,background:"linear-gradient(160deg,#0F2D4A,#1A7A6E)",borderRadius:12,marginTop:4}}>
             <p style={{color:"rgba(255,255,255,0.55)",fontSize:11,textAlign:"center",margin:"0 0 12px"}}>NHS Mifflin-St Jeor method</p>
