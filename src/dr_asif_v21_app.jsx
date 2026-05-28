@@ -415,7 +415,7 @@ If you cannot identify food, return: {"error":"Could not identify food. Please t
               </div>
             ))}
           </div>
-          {over && <div style={{ marginTop: 9, padding: "8px 11px", background: T.alertL, borderRadius: 9 }}><p style={{ color: T.alert, fontSize: 12, margin: 0, fontWeight: 600 }}>⚠️ Over limit. Ask: "What are my options now?"</p></div>}
+          {tover && <div style={{ marginTop: 9, padding: "8px 11px", background: T.alertL, borderRadius: 9 }}><p style={{ color: T.alert, fontSize: 12, margin: 0, fontWeight: 600 }}>⚠️ Over limit. Ask: "What are my options now?"</p></div>}
         </Card>
 
         {/* ── AI PHOTO SCANNER ── */}
