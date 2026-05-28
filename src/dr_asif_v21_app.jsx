@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useGender, useUserProfile, useStreak, useCaloriesFood, useCaloriesExercise, useChallengePhase, useChallengeStarted, useChallengeChecked, useTrackEntries, useCoachMessages, useCommunityLiked, StorageService } from "./services/storage";
+import { useGender, useUserProfile, useStreak, useCaloriesFood, useCaloriesExercise, useChallengePhase, useChallengeStarted, useChallengeChecked, useChallengeCompleted, useTrackEntries, useCoachMessages, useCommunityLiked, StorageService } from "./services/storage";
 
 const T = {
   bg: "#F4F6F9", surface: "#FFFFFF", surfaceAlt: "#F8FAFC",
@@ -42,6 +42,8 @@ const QUOTES = [
   { text: "When you are hungry during fasting, your body is using its fat reserves. Good news!", src: "Chapter 13" },
   { text: "Once your autopilot switches on, staying fit feels effortless.", src: "Chapter 6" },
 ];
+
+const PHASE_ORDER = ["week3", "month3", "month3fit"];
 
 const PHASES = {
   week3: {
@@ -689,20 +691,92 @@ function ChallengeTab({ plan }) {
   const [phase, setPhase] = useChallengePhase("week3");
   const [started, setStarted] = useChallengeStarted(false);
   const [checked, setChecked] = useChallengeChecked({});
+  const [completed, setCompleted] = useChallengeCompleted({ week3: null, month3: null, month3fit: null });
   const cfg = PHASES[phase];
   const dk = new Date().toISOString().split("T")[0];
-  const tc = checked[dk] || {};
+
+  const isPhaseUnlocked = (phaseKey) => {
+    const idx = PHASE_ORDER.indexOf(phaseKey);
+    if (idx === 0) return true;
+    const prev = PHASE_ORDER[idx - 1];
+    return completed[prev] !== null;
+  };
+
+  const tc = (checked[phase] || {})[dk] || {};
   const done = cfg.targets.filter(t => tc[t.id]).length;
-  const toggle = id => setChecked(c => ({ ...c, [dk]: { ...tc, [id]: !tc[id] } }));
+  const toggle = id => setChecked(c => ({
+    ...c,
+    [phase]: {
+      ...(c[phase] || {}),
+      [dk]: {
+        ...((c[phase] || {})[dk] || {}),
+        [id]: !((c[phase] || {})[dk] || {})[id],
+      },
+    },
+  }));
+
+  const handleAllDone = () => {
+    if (done !== cfg.targets.length) return;
+    const phaseDays = cfg.days;
+    const allDates = Object.keys(checked[phase] || {}).sort();
+    let streak = 0;
+    const today = dk;
+    for (let i = 0; i < phaseDays; i++) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const ds = d.toISOString().split("T")[0];
+      const dayTargets = (checked[phase] || {})[ds] || {};
+      const dayDone = cfg.targets.filter(t => dayTargets[t.id]).length;
+      if (dayDone === cfg.targets.length) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+    if (streak >= phaseDays && !completed[phase]) {
+      setCompleted(c => ({ ...c, [phase]: dk }));
+      const nextIdx = PHASE_ORDER.indexOf(phase) + 1;
+      if (nextIdx < PHASE_ORDER.length) {
+        setPhase(PHASE_ORDER[nextIdx]);
+        setStarted(false);
+      }
+    }
+  };
+
+  const handleToggle = (id) => {
+    toggle(id);
+    setTimeout(handleAllDone, 0);
+  };
+
   return (
     <div style={{ height: "100%", overflowY: "auto", background: T.bg, paddingBottom: 90 }}>
       <div style={{ background: `linear-gradient(160deg,${cfg.color},#0F2D4A)`, padding: "28px 18px 20px", marginBottom: 12, paddingTop: "var(--sa-top)" }}>
         <p style={{ color: "rgba(255,255,255,0.42)", fontSize: 10, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 4px" }}>Programme</p>
         <p style={{ color: "#fff", fontSize: 24, fontWeight: 700, margin: "0 0 13px" }}>{cfg.emoji} {cfg.label}</p>
         <div style={{ display: "flex", gap: 8 }}>
-          {Object.entries(PHASES).map(([k, p]) => (
-            <button key={k} onClick={() => setPhase(k)} style={{ padding: "6px 12px", borderRadius: 50, border: "none", background: phase === k ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.18)", color: phase === k ? T.navy : "#fff", fontSize: 11, fontWeight: phase === k ? 700 : 400, cursor: "pointer" }}>{p.emoji} {p.label.split(" ")[0]}</button>
-          ))}
+          {Object.entries(PHASES).map(([k, p]) => {
+            const unlocked = isPhaseUnlocked(k);
+            return (
+              <button
+                key={k}
+                disabled={!unlocked}
+                onClick={() => unlocked && setPhase(k)}
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: 50,
+                  border: "none",
+                  background: phase === k ? "rgba(255,255,255,0.92)" : unlocked ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.08)",
+                  color: phase === k ? T.navy : unlocked ? "#fff" : "rgba(255,255,255,0.4)",
+                  fontSize: 11,
+                  fontWeight: phase === k ? 700 : 400,
+                  cursor: unlocked ? "pointer" : "not-allowed",
+                  opacity: unlocked ? 1 : 0.5,
+                }}
+              >
+                {p.emoji} {p.label.split(" ")[0]}{!unlocked && " 🔒"}
+              </button>
+            );
+          })}
         </div>
       </div>
       <div style={{ padding: "0 15px" }}>
@@ -726,7 +800,7 @@ function ChallengeTab({ plan }) {
                 <span style={{ color: cfg.color, fontSize: 12, fontWeight: 700 }}>{done}/{cfg.targets.length}</span>
               </div>
               {cfg.targets.map((t, i) => (
-                <button key={t.id} onClick={() => toggle(t.id)} style={{ display: "flex", alignItems: "center", gap: 9, width: "100%", padding: "9px 0", borderBottom: i < cfg.targets.length - 1 ? `1px solid ${T.border}` : "none", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}>
+                <button key={t.id} onClick={() => handleToggle(t.id)} style={{ display: "flex", alignItems: "center", gap: 9, width: "100%", padding: "9px 0", borderBottom: i < cfg.targets.length - 1 ? `1px solid ${T.border}` : "none", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}>
                   <div style={{ width: 22, height: 22, borderRadius: 6, flexShrink: 0, border: `2px solid ${tc[t.id] ? cfg.color : T.border}`, background: tc[t.id] ? cfg.color : "transparent", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s" }}>
                     {tc[t.id] && <span style={{ color: "#fff", fontSize: 12, fontWeight: 700 }}>✓</span>}
                   </div>

@@ -15,9 +15,10 @@ const STORAGE_KEYS = {
     exercise: 'calories.exercise',
   },
   challenge: {
-    phase:   'challenge.phase',
-    started: 'challenge.started',
-    checked: 'challenge.checked',
+    phase:     'challenge.phase',
+    started:   'challenge.started',
+    checked:   'challenge.checked',
+    completed: 'challenge.completed',
   },
   track: {
     entries: 'track.entries',
@@ -110,9 +111,10 @@ export const useCaloriesFood     = (defaultValue) => useStorage(STORAGE_KEYS.cal
 export const useCaloriesExercise = (defaultValue) => useStorage(STORAGE_KEYS.calories.exercise, defaultValue);
 
 // Challenge
-export const useChallengePhase   = (defaultValue) => useStorage(STORAGE_KEYS.challenge.phase, defaultValue);
-export const useChallengeStarted = (defaultValue) => useStorage(STORAGE_KEYS.challenge.started, defaultValue);
-export const useChallengeChecked = (defaultValue) => useStorage(STORAGE_KEYS.challenge.checked, defaultValue);
+export const useChallengePhase     = (defaultValue) => useStorage(STORAGE_KEYS.challenge.phase, defaultValue);
+export const useChallengeStarted  = (defaultValue) => useStorage(STORAGE_KEYS.challenge.started, defaultValue);
+export const useChallengeChecked  = (defaultValue) => useStorage(STORAGE_KEYS.challenge.checked, defaultValue);
+export const useChallengeCompleted = (defaultValue) => useStorage(STORAGE_KEYS.challenge.completed, defaultValue);
 
 // Track
 export const useTrackEntries = (defaultValue) => useStorage(STORAGE_KEYS.track.entries, defaultValue);
