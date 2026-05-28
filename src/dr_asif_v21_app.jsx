@@ -340,9 +340,11 @@ function CaloriesTab({ plan }) {
 
   const eaten = food.reduce((s, f) => s + f.kcal, 0);
   const burned = ex.reduce((s, e) => s + e.kcal, 0);
-  const net = eaten - burned; const pct = Math.min(100, Math.round((net / lim) * 100));
-  const bpct = Math.min(100, Math.round((burned / 500) * 100));
-  const over = net > lim; const bdone = burned >= 500; const rem = lim - net;
+  const pct = Math.round((eaten / lim) * 100);
+  const bpct = Math.round((burned / 500) * 100);
+  const over = eaten > lim; const bover = burned > 500;
+  const tover = (eaten - burned) - (lim - 500);
+  const bdone = burned >= 500;
   const R = 41, circ = 2 * Math.PI * R;
   const showT = m => { setToast(m); setTimeout(() => setToast(""), 2400); };
   const addF = () => { if (!nm || !nk) return; setFood(p => [...p, { id: Date.now(), name: nm, kcal: parseInt(nk), type: "manual" }]); showT(`✓ ${nm} added`); setNm(""); setNk(""); setSm(false); };
@@ -406,7 +408,7 @@ If you cannot identify food, return: {"error":"Could not identify food. Please t
             ))}
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 7, marginTop: 11, paddingTop: 11, borderTop: `1px solid ${T.border}` }}>
-            {[["Eaten", eaten, T.teal], ["Burned", burned, T.sage], [over ? "Over" : "Left", Math.abs(rem), over ? T.alert : T.navy]].map(([l, v, c]) => (
+            {[["Eaten", eaten, T.teal], ["Burned", burned, T.sage], [tover > 0 ? "Over" : "Left", Math.abs(tover), tover > 0 ? T.alert : T.navy]].map(([l, v, c]) => (
               <div key={l} style={{ textAlign: "center", padding: "7px 3px", background: `${c}10`, borderRadius: 9 }}>
                 <p style={{ color: c, fontSize: 15, fontWeight: 700, margin: 0 }}>{v}</p>
                 <p style={{ color: T.light, fontSize: 9, margin: 0 }}>kcal · {l}</p>
