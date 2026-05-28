@@ -783,7 +783,7 @@ function ChallengeTab({ plan }) {
         {!started ? (
           <Card>
             <Ttl>Daily targets · {plan.icon} {plan.label}'s Plan</Ttl>
-            <div style={{ background: T.tealXL, borderRadius: 9, padding: "9px 12px", marginBottom: 13 }}><p style={{ color: T.teal, fontSize: 12, margin: 0, lineHeight: 1.55 }}>💡 {cfg.tips[0].text}</p></div>
+            <div style={{ background: T.tealXL, borderRadius: 9, padding: "9px 12px", marginBottom: 13 }}><p style={{ color: T.teal, fontSize: 12, margin: 0, lineHeight: 1.55 }}>💡 {cfg.tips[0].t}</p></div>
             {cfg.targets.map((t, i) => (
               <div key={t.id} style={{ display: "flex", gap: 9, padding: "7px 0", borderBottom: i < cfg.targets.length - 1 ? `1px solid ${T.border}` : "none" }}>
                 <span style={{ fontSize: 15 }}>{t.i}</span><span style={{ color: T.mid, fontSize: 13 }}>{t.l}</span>
