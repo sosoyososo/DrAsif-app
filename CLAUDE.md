@@ -10,6 +10,11 @@ A single-file React application — the "Lose Weight Smarter" companion app by D
 
 Single-file SPA (`src/dr_asif_v21_app.jsx`, ~1166 lines) with inline styles. See [`docs/architecture.md`](docs/architecture.md) for full component tree, line numbers, state inventory, data flow, and StorageService API reference.
 
+### Tab Documentation
+
+- [`docs/architecture.md`](docs/architecture.md) — component tree, state inventory, StorageService API
+- [`docs/challenge-tab.md`](docs/challenge-tab.md) — ChallengeTab phase system, unlock logic, completion flow, `checked` data shape
+
 ### Data Layer
 
 - **Meal Plans**: `PLANS` object — male/female book-based meal plans with exact calories and macros
