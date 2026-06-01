@@ -188,7 +188,7 @@ function Onboarding({ onSelect }) {
     if (!sel) return;
     setAppleLoading(true);
     try {
-      await signInWithApple({ onSuccess: () => { setAppleDone(true); onSelect(sel, null); } });
+      await signInWithApple({ onSuccess: () => { setAppleDone(true); } });
     } catch (e) {
       console.error("Apple Sign In failed", e);
       showT("Sign in failed. Please try again.");
