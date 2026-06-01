@@ -45,5 +45,10 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>AAPLServiceConfiguration</key>
+	<dict>
+		<key>AAPLServiceKey</key>
+		<string>com.drasif.loseweightsmarter</string>
+	</dict>
 </dict>
 </plist>
