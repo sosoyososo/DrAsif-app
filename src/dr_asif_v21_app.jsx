@@ -187,16 +187,17 @@ function Onboarding({ onSelect }) {
     if (!sel) return;
     setAppleLoading(true);
     try {
-      const result = await SignInWithApple.authenticate({ clientId: "com.drasif.loseweightsmarter" });
+      const result = await SignInWithApple.authorize({ clientId: "com.drasif.loseweightsmarter", scopes: "email name" });
+      const { response } = result;
       const res = await fetch(APPLE_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          identityToken: result.identityToken,
-          authorizationCode: result.authorizationCode,
-          user: result.user,
-          fullName: result.fullName,
-          email: result.email,
+          identityToken: response.identityToken,
+          authorizationCode: response.authorizationCode,
+          user: response.user,
+          fullName: { givenName: response.givenName, familyName: response.familyName },
+          email: response.email,
         }),
       });
       if (!res.ok) throw new Error("Server error: " + res.status);
