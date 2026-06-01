@@ -180,14 +180,15 @@ function Splash({ onDone }) {
 function Onboarding({ onSelect }) {
   const [step, setStep] = useState(1); const [sel, setSel] = useState(null); const [ok, setOk] = useState(false);
   const [appleLoading, setAppleLoading] = useState(false);
+  useEffect(() => { return () => setAppleLoading(false); }, []);
+  const APPLE_API_URL = "https://drasif-app-server-production-e198.up.railway.app/auth/apple";
 
   const handleAppleSignIn = async () => {
     if (!sel) return;
     setAppleLoading(true);
     try {
       const result = await SignInWithApple.authenticate({ clientId: "com.drasif.loseweightsmarter" });
-      const apiUrl = "https://drasif-app-server-production-e198.up.railway.app/auth/apple";
-      await fetch(apiUrl, {
+      const res = await fetch(APPLE_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -198,9 +199,11 @@ function Onboarding({ onSelect }) {
           email: result.email,
         }),
       });
+      if (!res.ok) throw new Error("Server error: " + res.status);
       onSelect(sel, null);
     } catch (e) {
       console.error("Apple Sign In failed", e);
+      showT("Sign in failed. Please try again.");
     } finally {
       setAppleLoading(false);
     }
