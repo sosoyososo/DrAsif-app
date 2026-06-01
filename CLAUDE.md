@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A single-file React application — the "Lose Weight Smarter" companion app by Dr. Asif. Built as one monolithic JSX file (~4061 lines, 274KB) with no build tooling, no bundler, no external React dependencies beyond a CDN import. All state is persisted to `localStorage`.
+A single-file React application — the "Lose Weight Smarter" companion app by Dr. Asif. Built as one monolithic JSX file (~1289 lines) with Vite + React, no external React dependencies beyond a CDN import. All state is persisted to `localStorage`.
 
 ## Architecture
 
-Single-file SPA (`src/dr_asif_v21_app.jsx`, ~1166 lines) with inline styles. See [`docs/architecture.md`](docs/architecture.md) for full component tree, line numbers, state inventory, data flow, and StorageService API reference.
+Single-file SPA (`src/dr_asif_v21_app.jsx`, ~1289 lines) with inline styles. See [`docs/architecture.md`](docs/architecture.md) for full component tree, line numbers, state inventory, data flow, and StorageService API reference.
 
 ### Tab Documentation
 
