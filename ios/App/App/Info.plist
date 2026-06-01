@@ -48,7 +48,7 @@
 	<key>AAPLServiceConfiguration</key>
 	<dict>
 		<key>AAPLServiceKey</key>
-		<string>com.drasif.loseweightsmarter</string>
+		<string>com.drasif.diet</string>
 	</dict>
 </dict>
 </plist>
