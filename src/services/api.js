@@ -1,6 +1,7 @@
 // ─── API Configuration ──────────────────────────────────────────────────────────
 
-const API_BASE = "https://drasif-app-server-production-e198.up.railway.app";
+// Dev: use localhost server; Prod: use Railway prod server
+const API_BASE = "http://localhost:8080";
 
 // ─── API Client ─────────────────────────────────────────────────────────────────
 
