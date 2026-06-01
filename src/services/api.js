@@ -1,7 +1,8 @@
 // ─── API Configuration ──────────────────────────────────────────────────────────
 
-// Dev: use localhost server; Prod: use Railway prod server
-const API_BASE = "http://localhost:8080";
+const API_BASE = import.meta.env.DEV
+  ? "http://localhost:8080"
+  : "https://drasif-app-server-production-e198.up.railway.app";
 
 // ─── API Client ─────────────────────────────────────────────────────────────────
 
