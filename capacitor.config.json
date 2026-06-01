@@ -1,9 +1,8 @@
 {
-  "appId": "com.drasif.loseweightsmarter",
+  "appId": "com.drasif.diet",
   "appName": "Dr Asif Diet",
   "webDir": "dist",
   "server": {
-    "url": "http://localhost:8080",
     "androidScheme": "https"
   },
   "plugins": {
