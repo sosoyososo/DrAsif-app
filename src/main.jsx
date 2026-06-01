@@ -3,6 +3,7 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { App as CapApp } from "@capacitor/app";
 import { SafeArea } from "capacitor-plugin-safe-area";
+import { Capacitor } from "@capacitor/core";
 import App from "./dr_asif_v21_app.jsx";
 
 CapApp.addListener("backButton", ({ canGoBack }) => {
@@ -38,3 +39,5 @@ SplashScreen.hide();
 
 const root = createRoot(document.getElementById("root"));
 root.render(<App />);
+
+export const isIOS = Capacitor.getPlatform() === "ios";
