@@ -4565,6 +4565,10 @@ export default function App() {
   useEffect(() => { lsSet("dr_foodlog_" + new Date().toISOString().split("T")[0], foodLog); }, [foodLog]);
   useEffect(() => { lsSet("dr_exlog_" + new Date().toISOString().split("T")[0], exLog); }, [exLog]);
 
+  // ── Close overlays on tab switch ─────────────────────────────────────────────
+  useEffect(() => { if (showSettings) setShowSettings(false); }, [active]);
+  useEffect(() => { if (showMore) setShowMore(false); }, [active]);
+
   const basePlan = gender ? PLANS[gender] : null;
 
   // Merge personalised targets into plan if profile exists
@@ -4794,7 +4798,7 @@ export default function App() {
             const accent = moreIsActive ? T.navyMid : T.light;
             return (
               <button
-                onClick={() => setShowMore(m => !m)}
+                onClick={() => { if (showSettings) setShowSettings(false); setShowMore(m => !m); }}
                 style={{
                   flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
                   border: "none", background: "transparent", cursor: "pointer", padding: "4px 2px",
