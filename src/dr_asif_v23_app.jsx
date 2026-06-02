@@ -642,7 +642,7 @@ function Modal({ title, children, onClose }) {
     }} onClick={onClose}>
       <div onClick={e => e.stopPropagation()} style={{
         background: T.surface, borderRadius: "24px 24px 0 0",
-        padding: "24px 22px 44px", width: "100%", maxWidth: 390,
+        padding: "24px 22px 44px", width: "100%",
         boxShadow: "0 -8px 40px rgba(15,45,74,0.18)",
         maxHeight: "90vh", overflowY: "auto",
       }}>
@@ -4587,7 +4587,7 @@ export default function App() {
   // Splash
   if (splash) {
     return (
-      <div style={{ maxWidth: 390, margin: "0 auto", minHeight: "100vh" }}>
+      <div style={{ width: "100%", margin: "0 auto", minHeight: "100vh" }}>
         <SplashScreen onDone={() => setSplash(false)} />
       </div>
     );
@@ -4598,9 +4598,9 @@ export default function App() {
     return (
       <>
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
-        <div style={{ maxWidth: 390, margin: "0 auto" }}>
+        <div style={{ width: "100%", margin: "0 auto" }}>
           <OnboardingScreen onSelect={(g, profile) => { setGender(g); setUserProfile(profile || null); setActive("home"); }} />
-        </div>
+        </div >
       </>
     );
   }
@@ -4634,7 +4634,7 @@ export default function App() {
   };
 
   return (
-    <div style={{ maxWidth: 390, margin: "0 auto", minHeight: "100vh", background: T.bg, position: "relative", overflowX: "hidden" }}>
+    <div style={{ width: "100%", margin: "0 auto", minHeight: "100vh", background: T.bg, position: "relative", overflowX: "hidden" }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
 
       {/* ── Settings slide-up overlay — tabs remain visible ── */}
@@ -4648,7 +4648,7 @@ export default function App() {
           {/* Panel — slides up from bottom, leaves tab bar showing */}
           <div style={{
             position: "fixed", bottom: 74, left: "50%", transform: "translateX(-50%)",
-            width: "100%", maxWidth: 390, zIndex: 301,
+            width: "100%", zIndex: 301,
             background: T.surface, borderRadius: "24px 24px 0 0",
             borderTop: `1px solid ${T.border}`,
             boxShadow: "0 -8px 40px rgba(15,45,74,0.18)",
@@ -4704,7 +4704,7 @@ export default function App() {
           />
           <div style={{
             position: "fixed", bottom: 74, left: "50%", transform: "translateX(-50%)",
-            width: "calc(100% - 0px)", maxWidth: 390, zIndex: 99,
+            width: "calc(100% - 0px)", zIndex: 99,
             background: "#fff", borderRadius: "22px 22px 0 0",
             borderTop: `1px solid ${T.border}`,
             padding: "14px 20px 24px",
@@ -4739,7 +4739,7 @@ export default function App() {
       {/* ── Bottom nav — exactly 5 tabs + More ── */}
       <div style={{
         position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)",
-        width: "100%", maxWidth: 390,
+        width: "100%",
         background: "rgba(255,255,255,0.98)", backdropFilter: "blur(24px)",
         borderTop: `1px solid ${T.border}`,
         zIndex: 100,
