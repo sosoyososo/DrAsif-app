@@ -2,105 +2,88 @@
 
 ## Overview
 
-`ChallengeTab` is a phase-based challenge tracker in `src/dr_asif_v21_app.jsx` (lines 690–831). It guides users through three progressive challenge phases derived from Dr. Asif's book.
+`ChallengeTab` is a phase-based challenge tracker in `src/dr_asif_v23_app.jsx` (lines 1389–1919). It guides users through three progressive challenge phases derived from Dr. Asif's book.
 
-## Phase Definitions (lines 48–67)
+## Phase Definitions (PHASE_CONFIG, lines 1254–1326)
 
 ```
-PHASE_ORDER = ["week3", "month3", "month3fit"]
-
-PHASES = {
-  week3:     { label: "3-Week Habit",      emoji: "🌱", color: T.teal,    days: 21, targets: [...], tips: [...], warning: "..." },
-  month3:    { label: "3-Month Weight Loss", emoji: "⚖️", color: "#1A4A6E", days: 90, targets: [...], tips: [...], warning: "..." },
-  month3fit: { label: "3-Month Fitness",   emoji: "💪", color: "#6B3FA0", days: 90, targets: [...], tips: [...], warning: "..." },
+PHASE_CONFIG = {
+  week3:    { id: "week3",    label: "3-Week Habit",       emoji: "🌱", days: 21, color: T.teal,    colorLight: T.tealXL,    dailyTargets: [...], tips: [...], warning: "..." },
+  month3:   { id: "month3",   label: "3-Month Weight Loss", emoji: "⚖️", days: 90, color: "#1A4A6E", colorLight: "#EBF2F8", dailyTargets: [...], tips: [...], warning: "..." },
+  month3fit:{ id: "month3fit",label: "3-Month Fitness",    emoji: "💪", days: 90, color: "#6B3FA0", colorLight: "#F0EBF8", dailyTargets: [...], tips: [...], warning: "..." },
 }
 ```
 
 Each phase has:
-- `label`, `emoji`, `color` — UI display
+- `label`, `emoji`, `color` / `colorLight` — UI display
 - `days` — required consecutive streak length to complete
-- `targets[]` — daily checklist items with `id`, `l` (label), `i` (icon)
-- `tips[]` — advice shown in pre-start card, with `i` (icon) and `t` (text)
+- `dailyTargets[]` — daily checklist items with `id`, `label`, `icon`
+- `tips[]` — advice shown in pre-start card, with `icon` and `text`
 - `warning` — displayed below targets
 
-## State (lines 691–694)
+## State (in App component, lines 4547–4551)
 
-All challenge state is persisted to `localStorage` via domain-specific hooks:
+All challenge state is passed as props to `ChallengeTab`:
 
-| State | Hook | Storage Key | Default |
-|-------|------|-------------|---------|
-| `phase` | `useChallengePhase` | `challenge.phase` | `"week3"` |
-| `started` | `useChallengeStarted` | `challenge.started` | `false` |
-| `checked` | `useChallengeChecked` | `challenge.checked` | `{}` |
-| `completed` | `useChallengeCompleted` | `challenge.completed` | `{ week3: null, month3: null, month3fit: null }` |
+| State | Storage Key | Default | In ChallengeTab as |
+|---|---|---|---|
+| `challengePhase` | `dr_phase` | `"week3"` | `phase` prop |
+| `challengeStartDate` | `dr_startdate` | `null` | `startDate` prop |
+| `challengeStarted` | `dr_started` | `false` | `started` prop |
+| `dailyLogs` | `dr_dailylogs` | `{}` | `{ [date]: { meals, exercise, nosnack, ... } }` |
+| `progressLog` | `dr_progresslog` | `[]` | `progressLog` prop |
 
-### `checked` Data Shape
+### `dailyLogs` Data Shape
 
 ```js
 {
-  [phase]: {           // e.g. "week3"
-    [date]: {          // ISO date string "2026-05-31"
-      [targetId]: bool // e.g. { fast: true, walk: false, ... }
-    }
+  [date]: {           // ISO date string "2026-05-31"
+    meals: bool,      // ate only preset meals (within limit)
+    exercise: bool,   // burned 500 kcal
+    nosnack: bool,    // stayed within limit = no snacking
+    // ... other targets
   }
 }
 ```
 
-## Phase Unlock Logic (lines 698–703)
+Auto-synced from `CaloriesTab` via `syncChallenge()` (CaloriesTab L1963).
 
-```js
-const isPhaseUnlocked = (phaseKey) => {
-  const idx = PHASE_ORDER.indexOf(phaseKey);
-  if (idx === 0) return true;                    // week3 always unlocked
-  const prev = PHASE_ORDER[idx - 1];
-  return completed[prev] !== null;               // requires prev phase completed
-};
-```
+## Phase Unlock Logic
 
-- **week3**: always unlocked
-- **month3**: requires `completed.week3 !== null`
-- **month3fit**: requires `completed.month3 !== null`
+Phases are unlocked sequentially:
+- **week3**: always unlocked (default starting phase)
+- **month3**: unlocked after week3 is completed
+- **month3fit**: unlocked after month3 is completed
+
+Phase completion is tracked via `progressLog` array entries.
 
 ## User Flow
 
 ### Pre-Start View (`!started`)
-1. Shows phase card with targets list
+1. Shows phase card with `dailyTargets` list
 2. Shows first tip in a teal box
-3. "Start {PhaseLabel} Today →" button sets `setStarted(true)`
+3. "Start {PhaseLabel} Today" button sets `setStarted(true)`
 
 ### Active View (`started`)
 1. Shows today's checklist with checkboxes
-2. Progress bar: `done / cfg.targets.length`
-3. "← Back to programme info" resets `started` to false
+2. Progress bar: checked targets / total targets
+3. "Back to programme info" resets `started` to false
 4. Book tips card shown below
 
-### Checking Items
-- `handleToggle(id)` calls `toggle(id)` then `setTimeout(handleAllDone, 0)`
-- `toggle` mutates `checked[phase][today][id]` to its negation
+### Phase 2+ Recalculation (`Phase2Recalc`, L1328)
 
-### Phase Completion (`handleAllDone`, lines 718–744)
+When user has a `userProfile` and enters month3/month3fit, `Phase2Recalc` prompts for current weight to recalculate targets.
 
-Triggered after every checkbox toggle:
+## Key Differences from v21
 
-1. If not all targets done for today → exit early
-2. Count `streak` by iterating `phase.days` days backward from today
-3. If every day in that streak has all targets checked → `streak++`
-4. If `streak >= phaseDays` and phase not already completed:
-   - `setCompleted({ ...c, [phase]: today })`
-   - Find next phase index → `setPhase(PHASE_ORDER[nextIdx])`
-   - `setStarted(false)` — returns to pre-start view
-
-**Bug risk**: The auto-advance happens silently after `setTimeout(..., 0)`. No confirmation dialog. If streak is met, user is pushed to next phase immediately.
-
-## Storage Hooks (src/services/storage.js)
-
-See `storage.js` lines 113–117 for challenge hook definitions. All use `useStorage` which:
-- Loads from `localStorage` on init
-- Saves immediately on every `setAndPersist` call
-- Uses `useRef` to always have current value for the `useCallback` closure
+- v23 uses `dailyLogs` object (auto-synced from CaloriesTab) instead of v21's `checked` per-phase per-date structure
+- v23 uses `progressLog` array instead of v21's `completed` object
+- v23 auto-syncs challenge checklist from calorie data (`syncChallenge` in CaloriesTab L1963)
+- v23 `PHASE_CONFIG` has richer `dailyTargets` and `tips` arrays
+- v21 used `StorageService` hooks; v23 uses inline `lsGet`/`lsSet` with App-level `useEffect` persistence
 
 ## Related
 
-- `PRIMARY_TABS` / `MORE_TABS` arrays control tab bar visibility
-- `renderTab()` at line ~1200 routes `"challenge"` to `<ChallengeTab plan={plan} gender={gender} />`
-- `App` component owns `gender` and `plan` props passed down
+- `PRIMARY_TABS` / `MORE_TABS` arrays (L106–119) control tab bar visibility
+- `renderTab()` at line 4609 routes `"challenge"` to `<ChallengeTab ...>`
+- `App` component owns all state and passes as props (14 props to ChallengeTab)

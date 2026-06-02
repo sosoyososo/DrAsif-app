@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A single-file React application — the "Lose Weight Smarter" companion app by Dr. Asif. Built as one monolithic JSX file (~1289 lines) with Vite + React, no external React dependencies beyond a CDN import. All state is persisted to `localStorage`.
+A single-file React application — the "Lose Weight Smarter" companion app by Dr. Asif. Built as one monolithic JSX file (~4824 lines) with Vite + React, no external React dependencies beyond a CDN import. All state is persisted to `localStorage` via inline `lsGet`/`lsSet` helpers.
 
 ## Architecture
 
-Single-file SPA (`src/dr_asif_v21_app.jsx`, ~1289 lines) with inline styles. See [`docs/architecture.md`](docs/architecture.md) for full component tree, line numbers, state inventory, data flow, and StorageService API reference.
+Single-file SPA (`src/dr_asif_v23_app.jsx`, ~4824 lines) with inline styles. See [`docs/architecture.md`](docs/architecture.md) for full component tree, line numbers, state inventory, data flow, and StorageService API reference.
 
 ### Tab Documentation
 
@@ -18,10 +18,10 @@ Single-file SPA (`src/dr_asif_v21_app.jsx`, ~1289 lines) with inline styles. See
 ### Data Layer
 
 - **Meal Plans**: `PLANS` object — male/female book-based meal plans with exact calories and macros
-- **Personalised Calculator**: `CalcForm` uses Mifflin-St Jeor equation for BMR, activity multipliers for custom targets
-- **Persistence**: `StorageService` in `src/services/storage.js` with `save`/`load`/`clearAll`/`exportAll`/`importAll`
-- **State Management**: `useStorage` hook wraps `useState` + auto-persist. All state lives in `App` and is passed down via props (no Context, no external state library)
-- **Storage keys**: `user.gender`, `user.profile`, `streak.weekly`, `calories.*`, `challenge.*`, `track.entries`, `coach.messages`, `community.liked`
+- **Personalised Calculator**: `PersonalisedPlanCalculator` uses Mifflin-St Jeor equation for BMR, activity multipliers for custom targets
+- **Persistence**: Inline `lsGet`/`lsSet` helpers (L4522) with `localStorage`. Legacy `StorageService` in `src/services/storage.js` with `save`/`load`/`exportAll`/`importAll`/`clearAll`. Dynamic registry — no hardcoded key list.
+- **State Management**: All state lives in `App` (L4531) and is passed down via props (no Context, no external state library)
+- **Storage keys**: dynamically tracked in `__dr_storage_registry__` localStorage key
 
 ### Design Tokens
 
@@ -92,7 +92,6 @@ Most changes involve:
 1. Modifying the `PLANS` data object for meal/nutrition data
 2. Adding/editing a tab component (each gets a section in the file)
 3. Adding tabs to `PRIMARY_TABS` or `MORE_TABS` arrays
-4. Adding state + `useEffect` for new `localStorage` persistence
 
 ### Code Style
 
