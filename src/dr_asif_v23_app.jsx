@@ -955,7 +955,7 @@ function HomeTab({ plan, gender, setGender, streakDays, setStreakDays, setShowSe
       {/* Header — clean medical */}
       <div style={{
         background: `linear-gradient(135deg, #0F2D4A 0%, #1A4A6E 60%, #1A7A6E 100%)`,
-        margin: "0 -16px", padding: "36px 22px 28px",
+        margin: "0 -16px", padding: "calc(36px + env(safe-area-inset-top)) 22px 28px",
         marginBottom: 16,
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -1486,7 +1486,7 @@ function ChallengeTab({ plan, gender, foodLog, exLog, phase, setPhase, startDate
       )}
 
       {/* Header */}
-      <div style={{ background: `linear-gradient(160deg,${cfg.color},#0F2D4A)`, margin: "0 -18px", padding: "28px 24px 24px", marginBottom: 18 }}>
+      <div style={{ background: `linear-gradient(160deg,${cfg.color},#0F2D4A)`, margin: "0 -18px", padding: "calc(28px + env(safe-area-inset-top)) 24px 24px", marginBottom: 18 }}>
         <div style={{ marginBottom: 14 }}><LogoFull dark={true} /></div>
         <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 10, fontFamily: "'DM Sans',sans-serif", letterSpacing: 2.5, textTransform: "uppercase", margin: "0 0 4px" }}>{cfg.chapter}</p>
         <h1 style={{ color: "#fff", fontSize: 28, fontFamily: "'Cormorant Garamond',serif", fontWeight: 700, margin: "0 0 4px" }}>{cfg.emoji} {cfg.label}</h1>
@@ -2095,7 +2095,7 @@ If you cannot identify food, return: { "error": "Could not identify food in this
   };
 
   return (
-    <div style={{ padding: "0 18px 110px" }}>
+    <div style={{ padding: "env(safe-area-inset-top) 18px 110px" }}>
       {/* Toast */}
       {toast && (
         <div style={{ position: "fixed", top: 20, left: "50%", transform: "translateX(-50%)", background: T.dark, color: "#fff", padding: "10px 20px", borderRadius: 50, fontFamily: "'DM Sans',sans-serif", fontSize: 13, zIndex: 999, boxShadow: "0 4px 20px rgba(0,0,0,0.25)", whiteSpace: "nowrap" }}>{toast}</div>
@@ -2861,7 +2861,7 @@ function FoodGuideTab({ plan, gender }) {
       {/* Header */}
       <div style={{
         background: "linear-gradient(135deg,#0F2D4A 0%,#1A4A6E 50%,#1A7A6E 100%)",
-        margin: "0 -16px", padding: "28px 20px 24px", marginBottom: 16,
+        margin: "0 -16px", padding: "calc(28px + env(safe-area-inset-top)) 20px 24px", marginBottom: 16,
       }}>
         <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 10, fontFamily: "'DM Sans',sans-serif", letterSpacing: 2, textTransform: "uppercase", margin: "0 0 4px" }}>Chapter 3</p>
         <h1 style={{ color: "#fff", fontSize: 26, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, margin: "0 0 8px", letterSpacing: -0.5 }}>Food Guide 🥗</h1>
@@ -3136,7 +3136,7 @@ function TrackTab({ plan, gender, setGender, progressLog, foodLog, exLog, dailyL
   }
 
   return (
-    <div style={{ padding: "0 16px 100px" }}>
+    <div style={{ padding: "env(safe-area-inset-top) 16px 100px" }}>
       <div style={{ paddingTop: 22, marginBottom: 18 }}>
         <div style={{ marginBottom: 12 }}><LogoFull /></div>
         <h1 style={{ color: T.dark, fontSize: 26, fontFamily: "'Cormorant Garamond',serif", fontWeight: 700, margin: 0 }}>Your Progress</h1>
@@ -3392,7 +3392,7 @@ RESPONSE RULES:
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 130px)" }}>
-      <div style={{ padding: "20px 18px 8px", flexShrink: 0 }}>
+      <div style={{ padding: "calc(20px + env(safe-area-inset-top)) 18px 8px", flexShrink: 0 }}>
         <div style={{ marginBottom: 12 }}><LogoFull /></div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
@@ -3463,7 +3463,7 @@ function LearnTab({ gender }) {
   const [selected, setSelected] = useState(null);
 
   return (
-    <div style={{ padding: "0 16px 100px" }}>
+    <div style={{ padding: "env(safe-area-inset-top) 16px 100px" }}>
       <div style={{ paddingTop: 22, marginBottom: 20 }}>
         <LogoFull />
       </div>
@@ -3574,7 +3574,7 @@ function CommunityTab({ gender }) {
   };
 
   return (
-    <div style={{ padding: "0 16px 100px", background: T.bg }}>
+    <div style={{ padding: "env(safe-area-inset-top) 16px 100px", background: T.bg }}>
 
       {/* Header */}
       <div style={{ paddingTop: 24, marginBottom: 20 }}>
@@ -3851,7 +3851,7 @@ function MindTab({ gender }) {
       {/* Header */}
       <div style={{
         background: `linear-gradient(135deg, #3D2A5E, #6B4C8A 60%, #9B7AB8)`,
-        padding: "28px 20px 24px", marginBottom: 0,
+        padding: "calc(28px + env(safe-area-inset-top)) 20px 24px", marginBottom: 0,
       }}>
         <div style={{ marginBottom: 16 }}><LogoFull dark={true} /></div>
         <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: "0 0 6px", letterSpacing: 1.5, textTransform: "uppercase" }}>Chapter 5 & 9</p>
