@@ -1,35 +1,17 @@
-import { useState, useCallback, useRef } from 'react';
+const REGISTRY_KEY = '__dr_storage_registry__';
 
-// ─── STORAGE_KEYS ─────────────────────────────────────────────────────────────
+// ─── Private registry helpers ─────────────────────────────────────────────────
 
-const STORAGE_KEYS = {
-  user: {
-    gender:  'user.gender',
-    profile: 'user.profile',
-  },
-  streak: {
-    weekly: 'streak.weekly',
-  },
-  calories: {
-    food:     'calories.food',
-    exercise: 'calories.exercise',
-  },
-  challenge: {
-    phase:     'challenge.phase',
-    started:   'challenge.started',
-    checked:   'challenge.checked',
-    completed: 'challenge.completed',
-  },
-  track: {
-    entries: 'track.entries',
-  },
-  coach: {
-    messages: 'coach.messages',
-  },
-  community: {
-    liked: 'community.liked',
-  },
-};
+function getRegistry() {
+  try {
+    const raw = localStorage.getItem(REGISTRY_KEY);
+    return raw ? new Set(JSON.parse(raw)) : new Set();
+  } catch { return new Set(); }
+}
+
+function saveRegistry(set) {
+  localStorage.setItem(REGISTRY_KEY, JSON.stringify([...set]));
+}
 
 // ─── StorageService ───────────────────────────────────────────────────────────
 
@@ -37,6 +19,9 @@ const StorageService = {
   save(key, data) {
     try {
       localStorage.setItem(key, JSON.stringify(data));
+      const registry = getRegistry();
+      registry.add(key);
+      saveRegistry(registry);
     } catch (e) {
       console.warn(`StorageService.save failed for key "${key}":`, e);
     }
@@ -53,78 +38,31 @@ const StorageService = {
   },
 
   exportAll() {
+    const registry = getRegistry();
     const result = {};
-    for (const section in STORAGE_KEYS) {
-      result[section] = {};
-      for (const key in STORAGE_KEYS[section]) {
-        result[section][key] = this.load(STORAGE_KEYS[section][key]);
-      }
+    for (const key of registry) {
+      result[key] = this.load(key);
     }
     return result;
   },
 
   importAll(json) {
     if (!json || typeof json !== 'object') return;
-    for (const section in json) {
-      for (const key in json[section]) {
-        this.save(`${section}.${key}`, json[section][key]);
-      }
+    for (const key in json) {
+      this.save(key, json[key]);
     }
   },
 
   clearAll() {
-    for (const section in STORAGE_KEYS) {
-      for (const key in STORAGE_KEYS[section]) {
-        localStorage.removeItem(STORAGE_KEYS[section][key]);
-      }
+    const registry = getRegistry();
+    for (const key of registry) {
+      localStorage.removeItem(key);
     }
+    registry.clear();
+    saveRegistry(registry);
   },
 };
 
-// ─── useStorage ────────────────────────────────────────────────────────────────
-
-function useStorage(key, defaultValue) {
-  const [value, setValue] = useState(() => StorageService.load(key, defaultValue));
-  const valueRef = useRef(value);
-  valueRef.current = value;
-
-  const setAndPersist = useCallback((next) => {
-    const resolved = next instanceof Function ? next(valueRef.current) : next;
-    setValue(resolved);
-    StorageService.save(key, resolved);
-  }, [key]);
-
-  return [value, setAndPersist];
-}
-
-// ─── Domain-specific hooks ──────────────────────────────────────────────────────
-
-// User
-export const useGender        = (defaultValue) => useStorage(STORAGE_KEYS.user.gender, defaultValue);
-export const useUserProfile   = (defaultValue) => useStorage(STORAGE_KEYS.user.profile, defaultValue);
-
-// Streak
-export const useStreak        = (defaultValue) => useStorage(STORAGE_KEYS.streak.weekly, defaultValue);
-
-// Calories
-export const useCaloriesFood     = (defaultValue) => useStorage(STORAGE_KEYS.calories.food, defaultValue);
-export const useCaloriesExercise = (defaultValue) => useStorage(STORAGE_KEYS.calories.exercise, defaultValue);
-
-// Challenge
-export const useChallengePhase     = (defaultValue) => useStorage(STORAGE_KEYS.challenge.phase, defaultValue);
-export const useChallengeStarted  = (defaultValue) => useStorage(STORAGE_KEYS.challenge.started, defaultValue);
-export const useChallengeChecked  = (defaultValue) => useStorage(STORAGE_KEYS.challenge.checked, defaultValue);
-export const useChallengeCompleted = (defaultValue) => useStorage(STORAGE_KEYS.challenge.completed, defaultValue);
-
-// Track
-export const useTrackEntries = (defaultValue) => useStorage(STORAGE_KEYS.track.entries, defaultValue);
-
-// Coach
-export const useCoachMessages = (defaultValue) => useStorage(STORAGE_KEYS.coach.messages, defaultValue);
-
-// Community
-export const useCommunityLiked = (defaultValue) => useStorage(STORAGE_KEYS.community.liked, defaultValue);
-
 // ─── Exports ──────────────────────────────────────────────────────────────────
 
-export { STORAGE_KEYS, StorageService };
+export { StorageService };
