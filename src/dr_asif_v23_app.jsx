@@ -4647,12 +4647,12 @@ export default function App() {
           />
           {/* Panel — slides up from bottom, leaves tab bar showing */}
           <div style={{
-            position: "fixed", bottom: 74, left: "50%", transform: "translateX(-50%)",
+            position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)",
             width: "100%", zIndex: 301,
             background: T.surface, borderRadius: "24px 24px 0 0",
             borderTop: `1px solid ${T.border}`,
             boxShadow: "0 -8px 40px rgba(15,45,74,0.18)",
-            maxHeight: "calc(100vh - 74px)",
+            maxHeight: "calc(100vh - 74px - env(safe-area-inset-bottom, 0px))",
             display: "flex", flexDirection: "column",
           }}>
             {/* Drag handle + header */}
@@ -4669,7 +4669,7 @@ export default function App() {
               </div>
             </div>
             {/* Scrollable content */}
-            <div style={{ overflowY: "auto", flex: 1, WebkitOverflowScrolling: "touch" }}>
+            <div style={{ overflowY: "auto", flex: 1, WebkitOverflowScrolling: "touch", padding: "0 0 env(safe-area-inset-bottom, 14px)" }}>
               <SettingsScreen
                 gender={gender}
                 setGender={setGender}
@@ -4683,7 +4683,7 @@ export default function App() {
       )}
 
       {/* Top-right controls */}
-      <div style={{ position: "fixed", top: 14, right: 14, zIndex: 200, display: "flex", gap: 8 }}>
+      <div style={{ position: "fixed", top: "calc(14px + env(safe-area-inset-top))", right: 14, zIndex: 200, display: "flex", gap: 8 }}>
         <button onClick={() => setShowSettings(true)} style={{
           background: "rgba(255,255,255,0.95)", backdropFilter: "blur(12px)",
           border: `1px solid ${T.border}`, borderRadius: 50, width: 38, height: 38,
@@ -4742,7 +4742,7 @@ export default function App() {
         width: "100%",
         background: "rgba(255,255,255,0.98)", backdropFilter: "blur(24px)",
         borderTop: `1px solid ${T.border}`,
-        zIndex: 100,
+        zIndex: 400,
         padding: "6px 0 env(safe-area-inset-bottom, 14px)",
       }}>
         <div style={{ display: "flex", padding: "0 4px" }}>
