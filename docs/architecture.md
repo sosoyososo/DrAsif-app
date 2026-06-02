@@ -7,7 +7,7 @@
 | File | Purpose |
 |---|---|
 | `src/dr_asif_v23_app.jsx` (~4824 lines) | Main SPA — all components, inline styles, app shell |
-| `src/services/storage.js` | Legacy `StorageService` (v23 uses inline `lsGet`/`lsSet`) |
+| `src/services/storage.js` | `StorageService` with dynamic registry — `lsGet`/`lsSet` delegate here |
 | `src/main.jsx` | Vite entry point, safe-area init, imports `dr_asif_v23_app.jsx` |
 
 ## Component Tree (line numbers from `dr_asif_v23_app.jsx`)
@@ -50,7 +50,7 @@ App (L4531, export default)
 │   ├── QUOTES (L241), PRINCIPLES (L266), CHAPTERS (L330), TIPS (L347)
 │   ├── SEED_POSTS (L538)                     — community seed posts
 ├── Storage helpers (L4522–4528)
-│   └── lsGet / lsSet (inline localStorage, replaces StorageService)
+│   └── lsGet / lsSet (thin delegates to StorageService)
 ```
 
 ## App State (all in `App` component, L4531)
