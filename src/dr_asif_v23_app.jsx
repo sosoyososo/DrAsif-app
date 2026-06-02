@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { StorageService } from "./services/storage.js";
 
 // ─── Design Tokens — Posh Medical Palette ─────────────────────────────────────
 // Primary: deep navy/slate · Accent: refined teal · Warm: off-white ivory
@@ -4520,11 +4521,10 @@ function SplashScreen({ onDone }) {
 
 // ─── localStorage helpers ────────────────────────────────────────────────────
 function lsGet(key, fallback) {
-  try { const v = localStorage.getItem(key); return v !== null ? JSON.parse(v) : fallback; }
-  catch { return fallback; }
+  return StorageService.load(key, fallback);
 }
 function lsSet(key, val) {
-  try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+  StorageService.save(key, val);
 }
 
 // ─── App Root ─────────────────────────────────────────────────────────────────
