@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { StorageService } from "./services/storage.js";
 
 // ─── Design Tokens — Posh Medical Palette ─────────────────────────────────────
@@ -634,7 +635,10 @@ function Pill({ children, color, bg }) {
 }
 
 function Modal({ title, children, onClose }) {
-  return (
+  // Portal to <body> so the Modal escapes the scrollable tab container's
+  // compositing layer on iOS — otherwise the bottom nav (zIndex 400, outside
+  // the scroller) renders above this Modal (zIndex 500, inside the scroller).
+  return createPortal(
     <div style={{
       position: "fixed", inset: 0, zIndex: 500,
       background: "rgba(15,45,74,0.55)", backdropFilter: "blur(8px)",
@@ -650,7 +654,8 @@ function Modal({ title, children, onClose }) {
         <h2 style={{ color: T.navy, fontSize: 20, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, margin: "0 0 20px" }}>{title}</h2>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
@@ -4707,7 +4712,7 @@ export default function App() {
             style={{ position: "fixed", inset: 0, zIndex: 98, background: "rgba(15,45,74,0.4)", backdropFilter: "blur(4px)" }}
           />
           <div style={{
-            position: "fixed", bottom: 74, left: "50%", transform: "translateX(-50%)",
+            position: "fixed", bottom: "calc(60px + env(safe-area-inset-bottom, 14px))", left: "50%", transform: "translateX(-50%)",
             width: "calc(100% - 0px)", zIndex: 99,
             background: "#fff", borderRadius: "22px 22px 0 0",
             borderTop: `1px solid ${T.border}`,
