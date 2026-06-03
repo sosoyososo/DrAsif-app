@@ -1,0 +1,33 @@
+commit 709eda58e5c3e976f553eee61a5d14e1a69f2f0c
+Author: karsa <wanghongtao114@gmail.com>
+Date:   Wed Jun 3 12:02:04 2026 +0800
+
+    fix: clip calorie/burn rings in CaloriesTab — R exceeded viewBox for stroke
+    
+    R=54 placed the circle path at 1px from each edge of the 110x110
+    viewBox. The 9px stroke is centered on the path, so the outer half of
+    the stroke extended to -3.5px outside the viewBox on every side —
+    clipped by the SVG canvas. Both the calorie and burn rings lost their
+    outer curve on all four sides.
+    
+    Reduce R to 48 so the outer stroke edge sits 2.5px inside the viewBox,
+    matching the working pattern at line 1581 (R=44, viewBox=100, stroke=8
+    → 2px clearance).
+    
+    Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+
+diff --git a/src/dr_asif_v23_app.jsx b/src/dr_asif_v23_app.jsx
+index 00863b4..ec212e7 100644
+--- a/src/dr_asif_v23_app.jsx
++++ b/src/dr_asif_v23_app.jsx
+@@ -1979,8 +1979,8 @@ function CaloriesTab({ plan, gender, foodLog, setFoodLog, exLog, setExLog, daily
+     setDailyLogs(prev => ({ ...prev, [todayKey]: { ...prev[todayKey], ...updated } }));
+   };
+ 
+-  // Ring SVG
+-  const R = 54, circ = 2 * Math.PI * R;
++  // Ring SVG — R must leave room for stroke (R + strokeWidth/2 must fit inside half the viewBox).
++  const R = 48, circ = 2 * Math.PI * R;
+   const dash = circ * (pct / 100);
+ 
+   const showToast = msg => { setToast(msg); setTimeout(() => setToast(""), 2500); };

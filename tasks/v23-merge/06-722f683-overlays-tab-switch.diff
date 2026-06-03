@@ -1,0 +1,39 @@
+commit 722f6838f10f72c0f2595f06b9d3540f14f783de
+Author: karsa <wanghongtao114@gmail.com>
+Date:   Tue Jun 2 16:28:22 2026 +0800
+
+    fix: close overlays on tab switch and prevent More/Settings z-index conflict
+    
+    When a tab was switched while Settings was open, the overlay remained
+    on screen blocking the new tab content. Also, opening the More drawer
+    while Settings was open placed the drawer under the Settings backdrop
+    (z-idx 98 vs 300), making it unreachable.
+    
+    Fix: auto-close Settings and More when active tab changes, and add
+    mutual-exclusion in the More button onClick handler.
+    Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+
+diff --git a/src/dr_asif_v23_app.jsx b/src/dr_asif_v23_app.jsx
+index f31ad00..2b4e735 100644
+--- a/src/dr_asif_v23_app.jsx
++++ b/src/dr_asif_v23_app.jsx
+@@ -4565,6 +4565,10 @@ export default function App() {
+   useEffect(() => { lsSet("dr_foodlog_" + new Date().toISOString().split("T")[0], foodLog); }, [foodLog]);
+   useEffect(() => { lsSet("dr_exlog_" + new Date().toISOString().split("T")[0], exLog); }, [exLog]);
+ 
++  // ── Close overlays on tab switch ─────────────────────────────────────────────
++  useEffect(() => { if (showSettings) setShowSettings(false); }, [active]);
++  useEffect(() => { if (showMore) setShowMore(false); }, [active]);
++
+   const basePlan = gender ? PLANS[gender] : null;
+ 
+   // Merge personalised targets into plan if profile exists
+@@ -4794,7 +4798,7 @@ export default function App() {
+             const accent = moreIsActive ? T.navyMid : T.light;
+             return (
+               <button
+-                onClick={() => setShowMore(m => !m)}
++                onClick={() => { if (showSettings) setShowSettings(false); setShowMore(m => !m); }}
+                 style={{
+                   flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
+                   border: "none", background: "transparent", cursor: "pointer", padding: "4px 2px",

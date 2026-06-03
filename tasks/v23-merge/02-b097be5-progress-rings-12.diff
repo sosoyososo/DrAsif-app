@@ -1,0 +1,56 @@
+commit b097be5e0b5d1addf8a833439062eb1aa4f47ab3
+Author: karsa <wanghongtao114@gmail.com>
+Date:   Wed Jun 3 12:37:03 2026 +0800
+
+    fix: progress rings start at 12 o'clock instead of drifting with pct
+    
+    strokeDashoffset = 0.25 * circ was meant to shift the dash start to 12
+    o'clock, but the dasharray pattern's period is dashLength + circ (depends
+    on pct), so 0.25 * circ is not a clean fraction of the period. The
+    visible start point therefore drifted around the circle for every
+    different percentage — pct=10% started near 1 o'clock, pct=25% showed
+    nothing at all (the gap swallowed the visible), pct=50% filled the left
+    half, and pct=100% filled only 3/4 of the circle. Verified visually with
+    a 7-percent sweep test SVG before applying.
+    
+    Replace the offset with transform="rotate(-90 cx cy)" on each progress
+    circle, which rotates the entire element so the path start (3 o'clock)
+    becomes 12 o'clock. Path direction is preserved, so the arc grows
+    clockwise from 12 o'clock and the visible length matches pct exactly.
+    
+    Affects all three progress rings: calorie + burn in CaloriesTab, and
+    phase progress in ChallengeTab.
+    
+    Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+
+diff --git a/src/dr_asif_v23_app.jsx b/src/dr_asif_v23_app.jsx
+index ec212e7..bf80749 100644
+--- a/src/dr_asif_v23_app.jsx
++++ b/src/dr_asif_v23_app.jsx
+@@ -1584,7 +1584,7 @@ function ChallengeTab({ plan, gender, foodLog, exLog, phase, setPhase, startDate
+                     stroke={phaseComplete ? T.sage : cfg.color}
+                     strokeWidth="8" strokeLinecap="round"
+                     strokeDasharray={`${circ * (phasePct / 100)} ${circ}`}
+-                    strokeDashoffset={circ * 0.25} />
++                    transform="rotate(-90 50 50)" />
+                   <text x="50" y="47" textAnchor="middle" fontFamily="'Cormorant Garamond',serif" fontSize="20" fontWeight="700" fill={T.dark}>{phasePct}%</text>
+                   <text x="50" y="61" textAnchor="middle" fontFamily="'DM Sans',sans-serif" fontSize="8" fill={T.light}>complete</text>
+                 </svg>
+@@ -2150,7 +2150,7 @@ If you cannot identify food, return: { "error": "Could not identify food in this
+                 stroke={overBudget ? T.terra : pct > 80 ? T.gold : "#7A9E7E"}
+                 strokeWidth="9" strokeLinecap="round"
+                 strokeDasharray={`${(2 * Math.PI * R) * (pct / 100)} ${2 * Math.PI * R}`}
+-                strokeDashoffset={(2 * Math.PI * R) * 0.25}
++                transform="rotate(-90 55 55)"
+                 style={{ transition: "stroke-dasharray 0.5s ease" }} />
+               <text x="55" y="51" textAnchor="middle" fontFamily="'Cormorant Garamond',serif"
+                 fontSize="19" fontWeight="700" fill={overBudget ? T.terra : T.dark}>{pct}%</text>
+@@ -2175,7 +2175,7 @@ If you cannot identify food, return: { "error": "Could not identify food in this
+                 stroke={burnDone ? T.sage : burnPct > 60 ? T.gold : T.terra}
+                 strokeWidth="9" strokeLinecap="round"
+                 strokeDasharray={`${(2 * Math.PI * R) * (burnPct / 100)} ${2 * Math.PI * R}`}
+-                strokeDashoffset={(2 * Math.PI * R) * 0.25}
++                transform="rotate(-90 55 55)"
+                 style={{ transition: "stroke-dasharray 0.5s ease" }} />
+               {/* Centre text */}
+               <text x="55" y="51" textAnchor="middle" fontFamily="'Cormorant Garamond',serif"
