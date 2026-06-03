@@ -3520,7 +3520,7 @@ RESPONSE RULES:
   ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 130px)" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <div style={{ padding: "calc(20px + env(safe-area-inset-top)) 18px 8px", flexShrink: 0 }}>
         <div style={{ marginBottom: 12 }}><LogoFull /></div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -3576,7 +3576,7 @@ RESPONSE RULES:
         ))}
       </div>
 
-      <div style={{ padding: "8px 18px 20px", display: "flex", gap: 10, flexShrink: 0 }}>
+      <div style={{ padding: "8px 18px", display: "flex", gap: 10, flexShrink: 0 }}>
         <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && send()}
           placeholder="Ask anything — meals, X-Point, skinny jabs..."
           style={{ flex: 1, padding: "14px 18px", borderRadius: 50, border: `1px solid ${T.border}`, fontFamily: "'DM Sans',sans-serif", fontSize: 14, background: T.surface, color: T.dark, outline: "none" }} />
@@ -4846,7 +4846,7 @@ export default function App() {
         }}>⚙</button>
       </div>
 
-      <div style={{ overflowY: "auto", height: "calc(100vh - 74px)", WebkitOverflowScrolling: "touch" }}>{renderTab()}</div>
+      <div style={{ overflowY: "auto", height: "calc(100vh - 74px - env(safe-area-inset-bottom, 0px))", WebkitOverflowScrolling: "touch" }}>{renderTab()}</div>
 
       {/* ── More drawer ── */}
       {showMore && (
