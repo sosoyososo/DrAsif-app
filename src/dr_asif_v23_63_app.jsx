@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { Capacitor } from "@capacitor/core";
 import { StorageService } from "./services/storage.js";
 import { apiPost } from "./services/api.js";
+import { signInWithApple } from "./services/apple-signin.js";
 
 // ─── Design Tokens — Posh Medical Palette ─────────────────────────────────────
 // Primary: deep navy/slate · Accent: refined teal · Warm: off-white ivory
@@ -4605,13 +4607,77 @@ function SettingsScreen({ gender, setGender, userProfile, setUserProfile, onClos
 }
 
 // ─── Splash Screen ────────────────────────────────────────────────────────────
+const IS_IOS = Capacitor.getPlatform() === "ios";
+
+function AppleSignInButton({ onClick, loading }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={loading}
+      style={{
+        display: "flex", alignItems: "center", justifyContent: "center",
+        gap: 8, width: "100%", height: 50, padding: "0 16px",
+        background: "#FFFFFF", color: "#000000",
+        border: "none", borderRadius: 8,
+        cursor: loading ? "default" : "pointer",
+        opacity: loading ? 0.7 : 1,
+        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif',
+        fontSize: 17, fontWeight: 500, letterSpacing: -0.3,
+        WebkitTapHighlightColor: "transparent",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+      }}
+    >
+      {loading ? (
+        <span>Signing in…</span>
+      ) : (
+        <>
+          <svg width="16" height="19" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{ marginTop: -2 }}>
+            <path fill="#000" d="M22.773 9.602c-.158.123-2.946 1.694-2.946 5.188 0 4.043 3.55 5.474 3.656 5.509-.016.087-.564 1.962-1.874 3.873-1.169 1.682-2.39 3.36-4.245 3.36-1.855 0-2.333-1.077-4.474-1.077-2.087 0-2.829 1.112-4.526 1.112-1.696 0-2.882-1.557-4.245-3.469-1.579-2.244-2.854-5.732-2.854-9.041 0-5.31 3.453-8.127 6.851-8.127 1.806 0 3.31 1.187 4.443 1.187 1.078 0 2.76-1.258 4.815-1.258.779 0 3.567.071 5.399 2.722zM17.5 4.205C18.347 3.197 18.948 1.802 18.948.413c0-.194-.016-.39-.052-.547-1.379.052-3.018.917-4.008 2.063-.778.882-1.503 2.277-1.503 3.689 0 .211.035.421.052.49.087.016.229.035.371.035 1.239 0 2.799-.829 3.692-2.038z" />
+          </svg>
+          <span>Sign in with Apple</span>
+        </>
+      )}
+    </button>
+  );
+}
+
 function SplashScreen({ onDone }) {
-  useEffect(() => { const t = setTimeout(onDone, 2200); return () => clearTimeout(t); }, [onDone]);
+  const [signingIn, setSigningIn] = useState(false);
+  const [error, setError] = useState(null);
+
+  // On non-iOS, auto-dismiss splash after the brand reveal. On iOS we wait
+  // for the user to tap "Sign in with Apple" — signInWithApple internally
+  // restores user data via readAllUserData before we call onDone.
+  useEffect(() => {
+    if (IS_IOS) return;
+    const t = setTimeout(onDone, 2200);
+    return () => clearTimeout(t);
+  }, [onDone]);
+
+  const handleAppleSignIn = () => {
+    setError(null);
+    setSigningIn(true);
+    signInWithApple({
+      onSuccess: () => {
+        setSigningIn(false);
+        onDone();
+      },
+      onError: (err) => {
+        setSigningIn(false);
+        const code = String(err?.code ?? err?.errorCode ?? "");
+        // 1001 = user cancelled the native sheet — stay on splash silently.
+        if (code === "1001" || /cancel/i.test(err?.message || "")) return;
+        setError(err?.message || "Sign in failed. Please try again.");
+      },
+    });
+  };
+
   return (
     <div style={{
       minHeight: "100vh", background: `linear-gradient(160deg, #0F2D4A 0%, #1A4A6E 45%, #1A7A6E 100%)`,
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      padding: "40px 28px", textAlign: "center",
+      padding: "40px 28px", textAlign: "center", position: "relative",
     }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
       {/* DA Diet wordmark — splash */}
@@ -4643,6 +4709,24 @@ function SplashScreen({ onDone }) {
         <div style={{ width: 260, height: 1, background: "rgba(255,255,255,0.15)", marginTop: 10, marginBottom: 12 }} />
         <span style={{ fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 13, fontStyle: "italic", color: "rgba(255,255,255,0.45)", letterSpacing: 0.5 }}>Lose Weight Smarter for Life</span>
       </div>
+
+      {IS_IOS && (
+        <div style={{
+          position: "absolute", left: 28, right: 28,
+          bottom: "calc(40px + env(safe-area-inset-bottom, 0px))",
+          display: "flex", flexDirection: "column", gap: 10,
+        }}>
+          {error && (
+            <div style={{
+              fontFamily: "'DM Sans',sans-serif", fontSize: 13,
+              color: "#FFE5E0", background: "rgba(192,57,43,0.25)",
+              border: "1px solid rgba(192,57,43,0.55)",
+              padding: "8px 12px", borderRadius: 6, textAlign: "center",
+            }}>{error}</div>
+          )}
+          <AppleSignInButton onClick={handleAppleSignIn} loading={signingIn} />
+        </div>
+      )}
     </div>
   );
 }
