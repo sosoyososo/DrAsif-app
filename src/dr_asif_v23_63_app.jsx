@@ -4854,7 +4854,7 @@ export default function App() {
             style={{ position: "fixed", inset: 0, zIndex: 98, background: "rgba(15,45,74,0.4)", backdropFilter: "blur(4px)" }}
           />
           <div style={{
-            position: "fixed", bottom: 74, left: "50%", transform: "translateX(-50%)",
+            position: "fixed", bottom: "calc(60px + env(safe-area-inset-bottom, 14px))", left: "50%", transform: "translateX(-50%)",
             width: "calc(100% - 0px)", zIndex: 99,
             background: "#fff", borderRadius: "22px 22px 0 0",
             borderTop: `1px solid ${T.border}`,
