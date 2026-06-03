@@ -4,6 +4,7 @@ import { Capacitor } from "@capacitor/core";
 import { StorageService } from "./services/storage.js";
 import { apiPost } from "./services/api.js";
 import { signInWithApple } from "./services/apple-signin.js";
+import { useStoredState } from "./hooks/useStoredState.js";
 
 // ─── Design Tokens — Posh Medical Palette ─────────────────────────────────────
 // Primary: deep navy/slate · Accent: refined teal · Warm: off-white ivory
@@ -3260,8 +3261,8 @@ function TrackTab({ plan, gender, setGender, progressLog, foodLog, exLog, dailyL
   for (let i = 0; i < 30; i++) {
     const d = new Date(); d.setDate(d.getDate() - i);
     const k = d.toISOString().split("T")[0];
-    const fl = lsGet("dr_foodlog_" + k, []);
-    const el = lsGet("dr_exlog_" + k, []);
+    const fl = StorageService.load("dr_foodlog_" + k, []);
+    const el = StorageService.load("dr_exlog_" + k, []);
     if (fl.length || el.length) {
       dayHistory.push({
         date: d.toLocaleDateString("en-GB", { day: "numeric", month: "short" }),
@@ -4731,49 +4732,29 @@ function SplashScreen({ onDone }) {
   );
 }
 
-// ─── localStorage helpers ────────────────────────────────────────────────────
-function lsGet(key, fallback) {
-  return StorageService.load(key, fallback);
-}
-function lsSet(key, val) {
-  StorageService.save(key, val);
-}
-
 // ─── App Root ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [splash, setSplash] = useState(true);
-  const [gender, setGender] = useState(() => lsGet("dr_gender", null));
+  const [gender, setGender] = useStoredState("dr_gender", null);
   const [active, setActive] = useState("home");
-  const [streakDays, setStreakDays] = useState(() => lsGet("dr_streak", Array(7).fill(false)));
+  const [streakDays, setStreakDays] = useStoredState("dr_streak", Array(7).fill(false));
   const [showSettings, setShowSettings] = useState(false);
   const [showMore, setShowMore] = useState(false);
 
   // ── Personalised plan (Mifflin-St Jeor) ─────────────────────────────────────
-  const [userProfile, setUserProfile] = useState(() => lsGet("dr_profile", null));
+  const [userProfile, setUserProfile] = useStoredState("dr_profile", null);
   // userProfile: { age, weight, height, activityLevel, maintenance, dietTarget, bmi, protein }
 
   // ── Shared calorie state ──────────────────────────────────────────────────────
-  const [foodLog, setFoodLog] = useState(() => lsGet("dr_foodlog_" + new Date().toISOString().split("T")[0], []));
-  const [exLog, setExLog] = useState(() => lsGet("dr_exlog_" + new Date().toISOString().split("T")[0], []));
+  const [foodLog, setFoodLog] = useStoredState("dr_foodlog_" + new Date().toISOString().split("T")[0], []);
+  const [exLog, setExLog] = useStoredState("dr_exlog_" + new Date().toISOString().split("T")[0], []);
 
   // ── Shared challenge state ────────────────────────────────────────────────────
-  const [challengePhase, setChallengePhase] = useState(() => lsGet("dr_phase", "week3"));
-  const [challengeStartDate, setChallengeStartDate] = useState(() => lsGet("dr_startdate", null));
-  const [challengeStarted, setChallengeStarted] = useState(() => lsGet("dr_started", false));
-  const [dailyLogs, setDailyLogs] = useState(() => lsGet("dr_dailylogs", {}));
-  const [progressLog, setProgressLog] = useState(() => lsGet("dr_progresslog", []));
-
-  // ── Persist all key state to localStorage ─────────────────────────────────────
-  useEffect(() => { lsSet("dr_gender", gender); }, [gender]);
-  useEffect(() => { lsSet("dr_streak", streakDays); }, [streakDays]);
-  useEffect(() => { lsSet("dr_profile", userProfile); }, [userProfile]);
-  useEffect(() => { lsSet("dr_phase", challengePhase); }, [challengePhase]);
-  useEffect(() => { lsSet("dr_startdate", challengeStartDate); }, [challengeStartDate]);
-  useEffect(() => { lsSet("dr_started", challengeStarted); }, [challengeStarted]);
-  useEffect(() => { lsSet("dr_dailylogs", dailyLogs); }, [dailyLogs]);
-  useEffect(() => { lsSet("dr_progresslog", progressLog); }, [progressLog]);
-  useEffect(() => { lsSet("dr_foodlog_" + new Date().toISOString().split("T")[0], foodLog); }, [foodLog]);
-  useEffect(() => { lsSet("dr_exlog_" + new Date().toISOString().split("T")[0], exLog); }, [exLog]);
+  const [challengePhase, setChallengePhase] = useStoredState("dr_phase", "week3");
+  const [challengeStartDate, setChallengeStartDate] = useStoredState("dr_startdate", null);
+  const [challengeStarted, setChallengeStarted] = useStoredState("dr_started", false);
+  const [dailyLogs, setDailyLogs] = useStoredState("dr_dailylogs", {});
+  const [progressLog, setProgressLog] = useStoredState("dr_progresslog", []);
 
   // ── Close overlays on tab switch ─────────────────────────────────────────────
   useEffect(() => { if (showSettings) setShowSettings(false); }, [active]);

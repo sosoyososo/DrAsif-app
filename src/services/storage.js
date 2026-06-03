@@ -19,6 +19,22 @@ function saveRegistry(set) {
 // ─── StorageService ───────────────────────────────────────────────────────────
 
 const StorageService = {
+  _initialized: false,
+  _listeners: new Set(),
+
+  markInitialized() {
+    this._initialized = true;
+  },
+
+  subscribe(listener) {
+    this._listeners.add(listener);
+    return () => this._listeners.delete(listener);
+  },
+
+  _notify() {
+    this._listeners.forEach((l) => l());
+  },
+
   save(key, data) {
     try {
       localStorage.setItem(key, JSON.stringify(data));
@@ -29,7 +45,7 @@ const StorageService = {
       console.warn(`StorageService.save failed for key "${key}":`, e);
       return;
     }
-    if (getToken()) {
+    if (this._initialized && getToken()) {
       writeUserData(key, data).catch((e) => {
         console.warn(`StorageService.save server sync failed for key "${key}":`, e);
       });
@@ -60,6 +76,7 @@ const StorageService = {
     for (const key in json) {
       this.save(key, json[key]);
     }
+    this._notify();
   },
 
   clearAll() {

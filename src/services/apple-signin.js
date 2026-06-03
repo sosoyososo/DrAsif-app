@@ -62,5 +62,9 @@ export async function signInWithApple({ onSuccess, onError }) {
     console.warn("Failed to restore user data from server:", err);
   }
 
+  // Server restore complete — localStorage now holds the server's truth,
+  // so it's safe to start mirroring local changes back to the server.
+  StorageService.markInitialized();
+
   onSuccess?.({ gender: response.gender });
 }
