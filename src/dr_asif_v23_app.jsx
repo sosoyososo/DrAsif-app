@@ -1979,8 +1979,8 @@ function CaloriesTab({ plan, gender, foodLog, setFoodLog, exLog, setExLog, daily
     setDailyLogs(prev => ({ ...prev, [todayKey]: { ...prev[todayKey], ...updated } }));
   };
 
-  // Ring SVG
-  const R = 54, circ = 2 * Math.PI * R;
+  // Ring SVG — R must leave room for stroke (R + strokeWidth/2 must fit inside half the viewBox).
+  const R = 48, circ = 2 * Math.PI * R;
   const dash = circ * (pct / 100);
 
   const showToast = msg => { setToast(msg); setTimeout(() => setToast(""), 2500); };
