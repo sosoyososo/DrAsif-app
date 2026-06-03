@@ -636,7 +636,7 @@ function Pill({ children, color, bg }) {
 function Modal({ title, children, onClose }) {
   return (
     <div style={{
-      position: "fixed", inset: 0, zIndex: 300,
+      position: "fixed", inset: 0, zIndex: 500,
       background: "rgba(15,45,74,0.55)", backdropFilter: "blur(8px)",
       display: "flex", alignItems: "flex-end", justifyContent: "center",
     }} onClick={onClose}>
