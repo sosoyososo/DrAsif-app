@@ -1,5 +1,4 @@
 // ─── API Configuration ──────────────────────────────────────────────────────────
-
 const API_BASE = import.meta.env.DEV
   ? "http://localhost:8080"
   : "https://drasif-app-server-production-e198.up.railway.app";
@@ -13,7 +12,7 @@ function setToken(token) {
 }
 
 function getToken() {
-  return localStorage.getItem(TOKEN_KEY);
+  return localStorage.getItem(TOKEN_KEY) || import.meta.env.VITE_API_TOKEN || null;
 }
 
 function clearToken() {

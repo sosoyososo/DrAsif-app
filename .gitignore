@@ -4,6 +4,8 @@ dist
 .playwright-mcp
 .DS_Store
 *.local
+.env
+.env.*.local
 
 # Capacitor
 ios/App/Pods

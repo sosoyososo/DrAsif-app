@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { StorageService } from "./services/storage.js";
+import { apiPost } from "./services/api.js";
 
 // ─── Design Tokens — Posh Medical Palette ─────────────────────────────────────
 // Primary: deep navy/slate · Accent: refined teal · Warm: off-white ivory
@@ -1985,7 +1986,7 @@ function CaloriesTab({ plan, gender, foodLog, setFoodLog, exLog, setExLog, daily
 
   const showToast = msg => { setToast(msg); setTimeout(() => setToast(""), 2500); };
 
-  // Scan food via Anthropic vision API
+  // Scan food via LLM proxy (vision)
   const handleImageSelect = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -2002,22 +2003,18 @@ function CaloriesTab({ plan, gender, foodLog, setFoodLog, exLog, setExLog, daily
         r.readAsDataURL(file);
       });
 
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          messages: [{
-            role: "user",
-            content: [
-              {
-                type: "image",
-                source: { type: "base64", media_type: file.type, data: base64 }
-              },
-              {
-                type: "text",
-                text: `You are a nutrition expert. Analyse this food image and return ONLY a JSON object — no markdown, no explanation, just raw JSON like this:
+      const data = await apiPost("/api/llm/proxy", {
+        max_tokens: 1000,
+        messages: [{
+          role: "user",
+          content: [
+            {
+              type: "image",
+              source: { type: "base64", media_type: file.type, data: base64 }
+            },
+            {
+              type: "text",
+              text: `You are a nutrition expert. Analyse this food image and return ONLY a JSON object — no markdown, no explanation, just raw JSON like this:
 {
   "foodName": "Grilled chicken with rice",
   "totalKcal": 520,
@@ -2032,13 +2029,11 @@ function CaloriesTab({ plan, gender, foodLog, setFoodLog, exLog, setExLog, daily
 }
 
 If you cannot identify food, return: { "error": "Could not identify food in this image. Please try a clearer photo." }`
-              }
-            ]
-          }]
-        })
+            }
+          ]
+        }]
       });
 
-      const data = await response.json();
       const text = data.content?.find(b => b.type === "text")?.text || "";
       const clean = text.replace(/```json|```/g, "").trim();
       const parsed = JSON.parse(clean);
@@ -3365,17 +3360,11 @@ RESPONSE RULES:
     setInput("");
     setLoading(true);
     try {
-      const resp = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          system: systemPrompt,
-          messages: newMsgs.map(m => ({ role: m.role === "assistant" ? "assistant" : "user", content: m.text })),
-        }),
+      const data = await apiPost("/api/llm/proxy", {
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: newMsgs.map(m => ({ role: m.role === "assistant" ? "assistant" : "user", content: m.text })),
       });
-      const data = await resp.json();
       const reply = data.content?.[0]?.text || "Keep going — if Dr. Mushtaq can do it, you can do it too! 🌿";
       setMessages([...newMsgs, { role: "assistant", text: reply }]);
     } catch {
