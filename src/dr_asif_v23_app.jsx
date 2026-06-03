@@ -1584,7 +1584,7 @@ function ChallengeTab({ plan, gender, foodLog, exLog, phase, setPhase, startDate
                     stroke={phaseComplete ? T.sage : cfg.color}
                     strokeWidth="8" strokeLinecap="round"
                     strokeDasharray={`${circ * (phasePct / 100)} ${circ}`}
-                    strokeDashoffset={circ * 0.25} />
+                    transform="rotate(-90 50 50)" />
                   <text x="50" y="47" textAnchor="middle" fontFamily="'Cormorant Garamond',serif" fontSize="20" fontWeight="700" fill={T.dark}>{phasePct}%</text>
                   <text x="50" y="61" textAnchor="middle" fontFamily="'DM Sans',sans-serif" fontSize="8" fill={T.light}>complete</text>
                 </svg>
@@ -2150,7 +2150,7 @@ If you cannot identify food, return: { "error": "Could not identify food in this
                 stroke={overBudget ? T.terra : pct > 80 ? T.gold : "#7A9E7E"}
                 strokeWidth="9" strokeLinecap="round"
                 strokeDasharray={`${(2 * Math.PI * R) * (pct / 100)} ${2 * Math.PI * R}`}
-                strokeDashoffset={(2 * Math.PI * R) * 0.25}
+                transform="rotate(-90 55 55)"
                 style={{ transition: "stroke-dasharray 0.5s ease" }} />
               <text x="55" y="51" textAnchor="middle" fontFamily="'Cormorant Garamond',serif"
                 fontSize="19" fontWeight="700" fill={overBudget ? T.terra : T.dark}>{pct}%</text>
@@ -2175,7 +2175,7 @@ If you cannot identify food, return: { "error": "Could not identify food in this
                 stroke={burnDone ? T.sage : burnPct > 60 ? T.gold : T.terra}
                 strokeWidth="9" strokeLinecap="round"
                 strokeDasharray={`${(2 * Math.PI * R) * (burnPct / 100)} ${2 * Math.PI * R}`}
-                strokeDashoffset={(2 * Math.PI * R) * 0.25}
+                transform="rotate(-90 55 55)"
                 style={{ transition: "stroke-dasharray 0.5s ease" }} />
               {/* Centre text */}
               <text x="55" y="51" textAnchor="middle" fontFamily="'Cormorant Garamond',serif"
