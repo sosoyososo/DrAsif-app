@@ -1,4 +1,4 @@
-import { getToken } from "./api";
+import { getSession } from "./api";
 import { writeUserData } from "./userDataApi";
 
 const REGISTRY_KEY = '__dr_storage_registry__';
@@ -45,7 +45,7 @@ const StorageService = {
       console.warn(`StorageService.save failed for key "${key}":`, e);
       return;
     }
-    if (this._initialized && getToken()) {
+    if (this._initialized && getSession()?.token) {
       writeUserData(key, data).catch((e) => {
         console.warn(`StorageService.save server sync failed for key "${key}":`, e);
       });

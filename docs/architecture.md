@@ -13,8 +13,8 @@
 ## Component Tree (line numbers from `dr_asif_v23_app.jsx`)
 
 ```
-App (L4531, export default)
-├── SplashScreen (L4479)                    — auto-dismiss brand intro
+App (L4737, export default)                    — authPhase state machine; boot probe
+├── SplashScreen (L4647)                    — sign-in (iOS) / brand reveal (non-iOS)
 ├── OnboardingScreen (L825)                  — gender selection + PersonalisedPlanCalculator
 │   └── PersonalisedPlanCalculator (L697)    — Mifflin-St Jeor profile builder
 ├── [Main shell: gear button + bottom nav + content area + overlays]
@@ -29,7 +29,7 @@ App (L4531, export default)
 │   │   ├── PHASE_CONFIG (L1254)             — week3 / month3 / month3fit config
 │   │   └── Phase2Recalc (L1328)             — Phase 2 profile recalc
 │   ├── CoachTab (L3236)                      — AI coach via Anthropic API
-│   ├── [More drawer — L4714]
+│   ├── [More drawer — L4952]
 │   │   ├── TrackTab (L3091)                  — weight/waist/photo progress
 │   │   ├── MindTab (L3812)                   — mindset, psychology tools, quizzes
 │   │   │   ├── MIND_TYPES (L368)            — mindset category data
@@ -39,8 +39,8 @@ App (L4531, export default)
 │   │   │   └── AFFIRMATIONS (L440)          — affirmations
 │   │   ├── LearnTab (L3458)                  — chapter summaries
 │   │   └── CommunityTab (L3534)             — verified reviews
-│   └── [Settings overlay — L4639]
-│       └── SettingsScreen (L4250)            — plan details, calculator, gender switching
+│   └── [Settings overlay — L4877]
+│       └── SettingsScreen (L4385)            — plan details, calculator, gender switching, Delete All
 ├── Shared UI (L604–664)
 │   ├── Card, SectionTitle, Pill, Modal, InfoRow
 ├── Data objects (L106–604)
@@ -49,11 +49,10 @@ App (L4531, export default)
 │   ├── PLANS (L129)                          — male/female book-based meal plans
 │   ├── QUOTES (L241), PRINCIPLES (L266), CHAPTERS (L330), TIPS (L347)
 │   ├── SEED_POSTS (L538)                     — community seed posts
-├── Storage helpers (L4522–4528)
-│   └── lsGet / lsSet (thin delegates to StorageService)
+├── Persistence (via `useStoredState` → `StorageService` in `src/services/storage.js`)
 ```
 
-## App State (all in `App` component, L4531)
+## App State (all in `App` component, L4737)
 
 | State | Default | Persisted | Notes |
 |---|---|---|---|
@@ -77,12 +76,70 @@ App (L4531, export default)
 ## App Flow
 
 ```
-App loads → splash? → SplashScreen
-         → no gender? → OnboardingScreen (gender + optional calculator)
-         → has gender → Main shell (tabs + overlays)
+App loads → authPhase: "booting"
+         → boot probe (GET /api/me; auto-refresh on 401)
+            ├─ success → authPhase: "authenticated"
+            └─ failure (no session, or refresh failed) → authPhase: "unauthenticated"
+         → "unauthenticated" → SplashScreen (iOS: Sign in with Apple button)
+         → "authenticated" + no gender → OnboardingScreen (gender + optional calculator)
+         → "authenticated" + gender → Main shell (tabs + overlays)
 ```
 
 Settings and More are slide-up overlay panels (backdrop + bottom sheet), always rendered above tab content. Tab bar remains visible when settings open.
+
+## Auth
+
+`src/services/api.js` is the single source of truth for session state and the only file that talks to the server auth endpoints.
+
+### Session keys (localStorage)
+
+| Key | Type | Purpose |
+|---|---|---|
+| `auth_token` | string (JWT HS256, 1h) | Bearer access token, sent on every protected request |
+| `auth_refresh_token` | string (opaque, 30d) | Rotated by `POST /api/refresh`; single-use with reuse detection |
+| `auth_user_id` | string (numeric) | Used in `/api/data/:user_id` path |
+
+### Auth state machine
+
+`App` holds `authPhase ∈ {"booting", "authenticated", "unauthenticated"}`:
+
+- `booting` — initial state, splash shown, boot probe in flight
+- `authenticated` — server confirmed the session via `/api/me` (possibly after auto-refresh)
+- `unauthenticated` — no session, or session is unrecoverable; splash with sign-in (iOS) or auto-dismiss (non-iOS)
+
+`authenticated` is purely about session validity. Whether onboarding (`dr_gender`) is complete is a render-level concern: `if (!gender) return <OnboardingScreen />` after the auth gate.
+
+### Boot probe
+
+```
+getSession() → null          → "unauthenticated"
+getSession() → { token, … }  → apiGet("/api/me")
+                                  ├─ 200 → "authenticated"
+                                  └─ 401 (apiFetch auto-refreshes first; if that also 401s)
+                                     → clearSession() → "unauthenticated"
+```
+
+### 401-aware `apiFetch` (single-flight refresh)
+
+Every protected request goes through `apiFetch`. On 401:
+
+1. If no `auth_refresh_token` → `clearSession()` + `throw AuthError`
+2. If a refresh is already in flight, await the same promise
+3. Otherwise: `POST /api/refresh` with `{refresh_token}`
+   - 200 → `setSession({token, refresh_token, user_id})` + retry original request
+   - 401 (any of `token_reuse_detected` / `token_expired` / `invalid_token`) → `clearSession()` + `throw AuthError`
+4. If retry also 401s → `clearSession()` + `throw AuthError`
+
+### "Delete All My Data" → server flow
+
+`resetAllData()` in App runs in this exact order:
+
+1. `DELETE /api/me` — deletes the user row + all `user_data` + revokes refresh tokens
+2. `POST /api/logout {all: true}` — defensive; covers any leftover refresh tokens
+3. Wipe every `dr_*` + `auth_*` localStorage key + `clearSession()`
+4. Reset all live React state; `setGender(null)` last
+
+Order matters: `DELETE /api/me` is auth-protected, so it must run while the access token is still in session. `logout()` clears the session, so it has to run after the delete. The server's `logoutHandler` reads `user_id` from the JWT (no DB lookup), so logging out a freshly-deleted user still 200s.
 
 ## Data Layer
 
@@ -126,9 +183,9 @@ PLANS.male / PLANS.female = {
 
 ## Key Patterns
 
-- **Bottom sheets**: Settings and More are overlays with backdrop blur + slide-up panels (L4639, L4697).
-- **Personalised plan merge**: `plan` derived at render time from `basePlan` + `userProfile` (L4569).
-- **Settings as overlay**: Tab bar stays visible — no full page replace (L4606 comment).
+- **Bottom sheets**: Settings and More are overlays with backdrop blur + slide-up panels (Settings opened at L4947, More drawer at L4958).
+- **Personalised plan merge**: `plan` derived at render time from `basePlan` + `userProfile` (around L4825).
+- **Settings as overlay**: Tab bar stays visible — no full page replace (comment at L4867).
 - **Date-keyed logs**: `foodLog`/`exLog` keyed by `YYYY-MM-DD` — isolated per day.
 - **Google Fonts**: Loaded via `<link>` tags inside JSX (L4598, L4636) — anti-pattern; should move to `index.html`.
 - **Section comments**: `// ─── NAME ───` pattern throughout.

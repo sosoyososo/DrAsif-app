@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Capacitor } from "@capacitor/core";
 import { StorageService } from "./services/storage.js";
-import { apiPost } from "./services/api.js";
+import { apiPost, apiGet, apiDelete, getSession, clearSession, logout } from "./services/api.js";
 import { signInWithApple } from "./services/apple-signin.js";
 import { useStoredState } from "./hooks/useStoredState.js";
 
@@ -4384,6 +4384,7 @@ function MindTab({ gender }) {
 // ─── Settings / About Screen ──────────────────────────────────────────────────
 function SettingsScreen({ gender, setGender, userProfile, setUserProfile, onClose, onDeleteAll }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const plan = PLANS[gender];
   const [showCalc, setShowCalc] = useState(false);
   const [showConfirmStandard, setShowConfirmStandard] = useState(false);
@@ -4594,8 +4595,8 @@ function SettingsScreen({ gender, setGender, userProfile, setUserProfile, onClos
             <p style={{ color: T.navy, fontSize: 13, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, margin: "0 0 5px", textAlign: "center" }}>Delete everything?</p>
             <p style={{ color: T.mid, fontSize: 12, fontFamily: "'DM Sans',sans-serif", margin: "0 0 12px", textAlign: "center", lineHeight: 1.5 }}>This permanently erases all measurements, logs, challenge progress and your profile. This cannot be undone.</p>
             <div style={{ display: "flex", gap: 8 }}>
-              <button onClick={() => setConfirmDelete(false)} style={{ flex: 1, padding: "10px 0", borderRadius: 9, border: `1px solid ${T.border}`, background: T.surface, color: T.mid, fontSize: 13, fontFamily: "'DM Sans',sans-serif", cursor: "pointer" }}>Cancel</button>
-              <button onClick={() => { setConfirmDelete(false); onDeleteAll(); }} style={{ flex: 1, padding: "10px 0", borderRadius: 9, border: "none", background: T.terra, color: "#fff", fontSize: 13, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, cursor: "pointer" }}>Yes, delete all</button>
+              <button onClick={() => setConfirmDelete(false)} disabled={deleting} style={{ flex: 1, padding: "10px 0", borderRadius: 9, border: `1px solid ${T.border}`, background: T.surface, color: T.mid, fontSize: 13, fontFamily: "'DM Sans',sans-serif", cursor: deleting ? "default" : "pointer", opacity: deleting ? 0.5 : 1 }}>Cancel</button>
+              <button onClick={async () => { if (deleting) return; setDeleting(true); try { await onDeleteAll(); } finally { setDeleting(false); } }} disabled={deleting} style={{ flex: 1, padding: "10px 0", borderRadius: 9, border: "none", background: T.terra, color: "#fff", fontSize: 13, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, cursor: deleting ? "default" : "pointer", opacity: deleting ? 0.6 : 1 }}>{deleting ? "Deleting…" : "Yes, delete all"}</button>
             </div>
           </div>
         )}
@@ -4643,18 +4644,18 @@ function AppleSignInButton({ onClick, loading }) {
   );
 }
 
-function SplashScreen({ onDone }) {
+function SplashScreen({ onAppleSignedIn }) {
   const [signingIn, setSigningIn] = useState(false);
   const [error, setError] = useState(null);
 
   // On non-iOS, auto-dismiss splash after the brand reveal. On iOS we wait
   // for the user to tap "Sign in with Apple" — signInWithApple internally
-  // restores user data via readAllUserData before we call onDone.
+  // restores user data via readAllUserData before we call onAppleSignedIn.
   useEffect(() => {
     if (IS_IOS) return;
-    const t = setTimeout(onDone, 2200);
+    const t = setTimeout(onAppleSignedIn, 2200);
     return () => clearTimeout(t);
-  }, [onDone]);
+  }, [onAppleSignedIn]);
 
   const handleAppleSignIn = () => {
     setError(null);
@@ -4662,7 +4663,7 @@ function SplashScreen({ onDone }) {
     signInWithApple({
       onSuccess: () => {
         setSigningIn(false);
-        onDone();
+        onAppleSignedIn();
       },
       onError: (err) => {
         setSigningIn(false);
@@ -4734,7 +4735,11 @@ function SplashScreen({ onDone }) {
 
 // ─── App Root ─────────────────────────────────────────────────────────────────
 export default function App() {
-  const [splash, setSplash] = useState(true);
+  // authPhase: "booting" | "authenticated" | "unauthenticated"
+  // "authenticated" means the server confirmed the session via /api/me
+  // (possibly auto-refreshed). Onboarding (gender) is a render-level concern
+  // that branches AFTER this gate — see render below.
+  const [authPhase, setAuthPhase] = useState("booting");
   const [gender, setGender] = useStoredState("dr_gender", null);
   const [active, setActive] = useState("home");
   const [streakDays, setStreakDays] = useStoredState("dr_streak", Array(7).fill(false));
@@ -4760,13 +4765,50 @@ export default function App() {
   useEffect(() => { if (showSettings) setShowSettings(false); }, [active]);
   useEffect(() => { if (showMore) setShowMore(false); }, [active]);
 
-  // ── Delete ALL user data — wipes localStorage AND live React state ────────────
-  const resetAllData = () => {
-    // 1. Clear every stored key (all dr_ keys including every daily food/exercise log + measurements)
+  // ── Boot probe: verify stored session with /api/me. If the access token
+  //    has expired, apiGet transparently calls /api/refresh first. Only if
+  //    that also fails do we drop back to "unauthenticated".
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const session = getSession();
+      if (!session?.token) {
+        if (!cancelled) setAuthPhase("unauthenticated");
+        return;
+      }
+      try {
+        await apiGet("/api/me");
+        if (!cancelled) setAuthPhase("authenticated");
+      } catch {
+        if (!cancelled) {
+          clearSession();
+          setAuthPhase("unauthenticated");
+        }
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  // ── Delete ALL user data — wipes server account, local session, and React state
+  //    Order is critical: DELETE /api/me is auth-protected and needs the access
+  //    token in session, so it must run BEFORE logout() (which clears session).
+  //    Server's logoutHandler reads user_id from the JWT (no DB lookup), so
+  //    logging out a freshly-deleted user still returns 200.
+  const resetAllData = async () => {
+    setShowSettings(false);
+    // 1. Delete the user account on the server.
+    try { await apiDelete("/api/me"); } catch {}
+    // 2. Revoke all refresh tokens. Access token is still cryptographically
+    //    valid here, so this 200s even though the user row is gone.
+    try { await logout({ all: true }); } catch {}
+    // 3. Clear every local dr_* + auth_* key
     try {
-      Object.keys(localStorage).filter(k => k.startsWith("dr_")).forEach(k => localStorage.removeItem(k));
-    } catch { }
-    // 2. Reset every live React state variable so nothing is re-persisted
+      Object.keys(localStorage)
+        .filter(k => k.startsWith("dr_") || k.startsWith("auth_"))
+        .forEach(k => localStorage.removeItem(k));
+      clearSession();
+    } catch {}
+    // 4. Reset every live React state variable so nothing is re-persisted
     setFoodLog([]);
     setExLog([]);
     setDailyLogs({});
@@ -4777,9 +4819,9 @@ export default function App() {
     setStreakDays(Array(7).fill(false));
     setUserProfile(null);
     setActive("home");
-    setShowSettings(false);
-    // 3. Reset gender LAST → returns user to onboarding, guaranteeing a clean slate
+    // 5. Reset gender LAST → returns user to onboarding, guaranteeing a clean slate
     setGender(null);
+    setAuthPhase("unauthenticated");
   };
 
   const basePlan = gender ? PLANS[gender] : null;
@@ -4801,16 +4843,16 @@ export default function App() {
     proteinHigh: Math.round(userProfile.weight * 1.5),
   } : basePlan;
 
-  // Splash
-  if (splash) {
+  // Auth gate: stay on splash until the server confirms the session.
+  if (authPhase !== "authenticated") {
     return (
       <div style={{ width: "100%", margin: "0 auto", minHeight: "100vh" }}>
-        <SplashScreen onDone={() => setSplash(false)} />
+        <SplashScreen onAppleSignedIn={() => setAuthPhase("authenticated")} />
       </div>
     );
   }
 
-  // Onboarding
+  // Session is valid; branch on onboarding (gender).
   if (!gender) {
     return (
       <>

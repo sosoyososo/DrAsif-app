@@ -1,5 +1,5 @@
 import { SignInWithApple } from "@capacitor-community/apple-sign-in";
-import { apiPost, setToken } from "./api";
+import { apiPost, setSession, getSession } from "./api";
 import { readAllUserData } from "./userDataApi";
 import { StorageService } from "./storage";
 
@@ -9,7 +9,8 @@ const APPLE_CLIENT_ID = "com.drasif.diet";
 
 /**
  * Trigger native Apple Sign In and forward credentials to the server.
- * On success: saves token, restores user data from server to localStorage.
+ * On success: saves the full session (access + refresh + user_id), restores
+ * user data from server to localStorage.
  * @param {object} opts
  * @param {(data: object) => void} opts.onSuccess - called with user data on success
  * @param {(err: Error) => void} opts.onError - called on error
@@ -47,13 +48,22 @@ export async function signInWithApple({ onSuccess, onError }) {
     onError?.(new Error(authResponse.error || "authentication failed"));
     return;
   }
+  if (!authResponse.refresh_token || authResponse.user_id == null) {
+    onError?.(new Error("auth response missing refresh_token or user_id"));
+    return;
+  }
 
-  // Save token
-  setToken(authResponse.token);
+  // Save the full session — access token, refresh token, user_id.
+  // All three are required to support token refresh and user-scoped data routes.
+  setSession({
+    token: authResponse.token,
+    refreshToken: authResponse.refresh_token,
+    userId: authResponse.user_id,
+  });
 
   // Restore user data from server to localStorage
   try {
-    const { data } = await readAllUserData(authResponse.user_id);
+    const { data } = await readAllUserData(getSession().userId);
     if (data && typeof data === "object") {
       StorageService.importAll(data);
     }
