@@ -4644,7 +4644,7 @@ function AppleSignInButton({ onClick, loading }) {
   );
 }
 
-function SplashScreen({ onAppleSignedIn }) {
+function SplashScreen({ onAppleSignedIn, validating = false }) {
   const [signingIn, setSigningIn] = useState(false);
   const [error, setError] = useState(null);
 
@@ -4682,6 +4682,7 @@ function SplashScreen({ onAppleSignedIn }) {
       padding: "40px 28px", textAlign: "center", position: "relative",
     }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+      <style>{`@keyframes drSplashSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
       {/* DA Diet wordmark — splash */}
       <div style={{ marginBottom: 32, display: "flex", flexDirection: "column", alignItems: "center" }}>
         {/* Wordmark row */}
@@ -4712,7 +4713,14 @@ function SplashScreen({ onAppleSignedIn }) {
         <span style={{ fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 13, fontStyle: "italic", color: "rgba(255,255,255,0.45)", letterSpacing: 0.5 }}>Lose Weight Smarter for Life</span>
       </div>
 
-      {IS_IOS && (
+      {validating ? (
+        <div style={{ marginTop: 12, display: "flex", justifyContent: "center" }} aria-live="polite" role="status">
+          <svg width="22" height="22" viewBox="0 0 22 22" style={{ animation: "drSplashSpin 0.9s linear infinite" }} aria-hidden="true">
+            <circle cx="11" cy="11" r="9" stroke="rgba(255,255,255,0.2)" strokeWidth="2" fill="none" />
+            <path d="M 11 2 a 9 9 0 0 1 9 9" stroke="#FFFFFF" strokeWidth="2" fill="none" strokeLinecap="round" />
+          </svg>
+        </div>
+      ) : IS_IOS && (
         <div style={{
           position: "absolute", left: 28, right: 28,
           bottom: "calc(40px + env(safe-area-inset-bottom, 0px))",
@@ -4844,10 +4852,15 @@ export default function App() {
   } : basePlan;
 
   // Auth gate: stay on splash until the server confirms the session.
+  // "booting" → spinner only (don't show sign-in yet — session may still validate).
+  // "unauthenticated" → confirmed no session, show sign-in on iOS.
   if (authPhase !== "authenticated") {
     return (
       <div style={{ width: "100%", margin: "0 auto", minHeight: "100vh" }}>
-        <SplashScreen onAppleSignedIn={() => setAuthPhase("authenticated")} />
+        <SplashScreen
+          validating={authPhase === "booting"}
+          onAppleSignedIn={() => setAuthPhase("authenticated")}
+        />
       </div>
     );
   }
