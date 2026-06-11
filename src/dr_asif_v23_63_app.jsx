@@ -4382,17 +4382,39 @@ function MindTab({ gender }) {
   );
 }
 
+// ─── Pill switch (used in Notifications settings) ─────────────────────────────
+function Switch({ on, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-pressed={on}
+      style={{
+        flexShrink: 0, width: 46, height: 26, borderRadius: 99, border: "none",
+        background: on ? T.teal : T.border,
+        position: "relative", cursor: "pointer", padding: 0,
+        transition: "background 0.18s",
+      }}
+    >
+      <span style={{
+        position: "absolute", top: 3, left: on ? 23 : 3,
+        width: 20, height: 20, borderRadius: "50%", background: "#fff",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.18)", transition: "left 0.18s",
+      }} />
+    </button>
+  );
+}
+
 // ─── Settings / About Screen ──────────────────────────────────────────────────
-function SettingsScreen({ gender, setGender, userProfile, setUserProfile, onClose, onDeleteAll }) {
+function SettingsScreen({ gender, setGender, userProfile, setUserProfile, onClose, onDeleteAll, notif }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const plan = PLANS[gender];
   const [showCalc, setShowCalc] = useState(false);
   const [showConfirmStandard, setShowConfirmStandard] = useState(false);
   const [showConfirmSwitch, setShowConfirmSwitch] = useState(false);
-  const [toast, setToast] = useState("");
-
-  const showToast = msg => { setToast(msg); setTimeout(() => setToast(""), 2800); };
+  // toast: { message: string, action?: { label, onClick } } | null
+  const [toast, setToast] = useState(null);
+  const showToast = msg => { setToast({ message: msg, action: null }); setTimeout(() => setToast(null), 2800); };
 
   const switchToStandard = () => {
     setUserProfile(null);
@@ -4411,12 +4433,123 @@ function SettingsScreen({ gender, setGender, userProfile, setUserProfile, onClos
     <div style={{ padding: "0 16px 100px" }}>
 
       {toast && (
-        <div style={{ position: "fixed", top: 20, left: "50%", transform: "translateX(-50%)", background: T.navy, color: "#fff", padding: "10px 22px", borderRadius: 50, fontFamily: "'DM Sans',sans-serif", fontSize: 13, zIndex: 999, whiteSpace: "nowrap", boxShadow: "0 4px 20px rgba(15,45,74,0.25)" }}>{toast}</div>
+        <div onClick={toast.action ? toast.action.onClick : undefined} style={{ position: "fixed", top: 20, left: "50%", transform: "translateX(-50%)", background: T.navy, color: "#fff", padding: "10px 22px", borderRadius: 50, fontFamily: "'DM Sans',sans-serif", fontSize: 13, zIndex: 999, whiteSpace: "nowrap", boxShadow: "0 4px 20px rgba(15,45,74,0.25)", cursor: toast.action ? "pointer" : "default", display: "flex", alignItems: "center", gap: 10 }}>
+          <span>{toast.message}</span>
+          {toast.action && (
+            <span style={{ background: "#fff", color: T.navy, padding: "3px 10px", borderRadius: 50, fontWeight: 700, fontSize: 12 }}>{toast.action.label}</span>
+          )}
+        </div>
       )}
 
       <div style={{ paddingTop: 24, marginBottom: 20 }}>
         <LogoFull />
       </div>
+
+      {/* ── NOTIFICATIONS ──────────────────────────────────────────────────── */}
+      <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", margin: "0 0 10px" }}>Notifications</p>
+
+      <Card style={{ marginBottom: 12 }}>
+        {/* Food Reminder row */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 4px", borderBottom: `1px solid ${T.border}` }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ color: T.navy, fontSize: 13, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, margin: 0 }}>🍽 Food Reminder</p>
+            <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: "2px 0 0" }}>Daily reminder to log your meals</p>
+          </div>
+          <input
+            type="time"
+            value={`${String(notif.settings.food.hour).padStart(2, "0")}:${String(notif.settings.food.minute).padStart(2, "0")}`}
+            onChange={e => {
+              const [h, m] = e.target.value.split(":").map(Number);
+              notif.setFood({ hour: h, minute: m });
+            }}
+            disabled={!notif.settings.food.enabled}
+            style={{ border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 8px", fontFamily: "'DM Sans',sans-serif", fontSize: 13, color: T.navy, background: notif.settings.food.enabled ? T.surface : T.surfaceAlt, marginRight: 10 }}
+          />
+          <Switch
+            on={notif.settings.food.enabled}
+            onClick={async () => {
+              const r = await notif.toggleFromUi("food");
+              if (r.permission === "denied") {
+                setToast({
+                  message: "Notifications not authorized",
+                  action: { label: "Open Settings", onClick: () => import("@capacitor/app").then(({ App }) => App.openAppSettings()) },
+                });
+                setTimeout(() => setToast(null), 5000);
+              }
+            }}
+          />
+        </div>
+
+        {/* Exercise Reminder row */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 4px", borderBottom: `1px solid ${T.border}` }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ color: T.navy, fontSize: 13, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, margin: 0 }}>🔥 Exercise Reminder</p>
+            <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: "2px 0 0" }}>Daily reminder to log your exercise</p>
+          </div>
+          <input
+            type="time"
+            value={`${String(notif.settings.exercise.hour).padStart(2, "0")}:${String(notif.settings.exercise.minute).padStart(2, "0")}`}
+            onChange={e => {
+              const [h, m] = e.target.value.split(":").map(Number);
+              notif.setExercise({ hour: h, minute: m });
+            }}
+            disabled={!notif.settings.exercise.enabled}
+            style={{ border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 8px", fontFamily: "'DM Sans',sans-serif", fontSize: 13, color: T.navy, background: notif.settings.exercise.enabled ? T.surface : T.surfaceAlt, marginRight: 10 }}
+          />
+          <Switch
+            on={notif.settings.exercise.enabled}
+            onClick={async () => {
+              const r = await notif.toggleFromUi("exercise");
+              if (r.permission === "denied") {
+                setToast({
+                  message: "Notifications not authorized",
+                  action: { label: "Open Settings", onClick: () => import("@capacitor/app").then(({ App }) => App.openAppSettings()) },
+                });
+                setTimeout(() => setToast(null), 5000);
+              }
+            }}
+          />
+        </div>
+
+        {/* Challenge Milestones row */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 4px" }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ color: T.navy, fontSize: 13, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, margin: 0 }}>🏆 Challenge Milestones</p>
+            <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: "2px 0 0" }}>Celebrate streak, goal, and phase wins</p>
+          </div>
+          <Switch
+            on={notif.settings.challenge.enabled}
+            onClick={async () => {
+              const r = await notif.toggleFromUi("challenge");
+              if (r.permission === "denied") {
+                setToast({
+                  message: "Notifications not authorized",
+                  action: { label: "Open Settings", onClick: () => import("@capacitor/app").then(({ App }) => App.openAppSettings()) },
+                });
+                setTimeout(() => setToast(null), 5000);
+              }
+            }}
+          />
+        </div>
+
+        {/* Permission status footer */}
+        <div style={{ borderTop: `1px solid ${T.border}`, padding: "10px 4px 2px", marginTop: 4 }}>
+          {notif.permission === "granted" && (
+            <p style={{ color: T.sage, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: 0 }}>✓ Notifications are enabled</p>
+          )}
+          {notif.permission === "denied" && (
+            <p
+              onClick={() => import("@capacitor/app").then(({ App }) => App.openAppSettings())}
+              style={{ color: T.terra, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: 0, cursor: "pointer", textDecoration: "underline" }}
+            >
+              ⚠ Notifications are disabled on this device. Tap to open System Settings.
+            </p>
+          )}
+          {notif.permission === "prompt" && (
+            <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: 0 }}>Notification permission not yet requested — toggle one on above to enable.</p>
+          )}
+        </div>
+      </Card>
 
       {/* ── PLAN MANAGEMENT — the key section ── */}
       <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", margin: "0 0 10px" }}>Your Plan</p>
@@ -4962,6 +5095,7 @@ export default function App() {
                 setUserProfile={setUserProfile}
                 onClose={() => setShowSettings(false)}
                 onDeleteAll={resetAllData}
+                notif={notif}
               />
             </div>
           </div>
