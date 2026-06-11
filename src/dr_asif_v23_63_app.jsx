@@ -6,6 +6,7 @@ import { apiPost, apiGet, apiDelete, getSession, clearSession, logout } from "./
 import { signInWithApple } from "./services/apple-signin.js";
 import { useStoredState } from "./hooks/useStoredState.js";
 import { useNotifications } from "./hooks/useNotifications.js";
+import { NativeSettings, AndroidSettings, IOSSettings } from "capacitor-native-settings";
 
 // ─── Design Tokens — Posh Medical Palette ─────────────────────────────────────
 // Primary: deep navy/slate · Accent: refined teal · Warm: off-white ivory
@@ -4472,7 +4473,7 @@ function SettingsScreen({ gender, setGender, userProfile, setUserProfile, onClos
               if (r.permission === "denied") {
                 setToast({
                   message: "Notifications not authorized",
-                  action: { label: "Open Settings", onClick: () => import("@capacitor/app").then(({ App }) => App.openAppSettings()) },
+                  action: { label: "Open Settings", onClick: () => NativeSettings.open({ optionAndroid: AndroidSettings.ApplicationDetails, optionIOS: IOSSettings.App }) },
                 });
                 setTimeout(() => setToast(null), 5000);
               }
@@ -4503,7 +4504,7 @@ function SettingsScreen({ gender, setGender, userProfile, setUserProfile, onClos
               if (r.permission === "denied") {
                 setToast({
                   message: "Notifications not authorized",
-                  action: { label: "Open Settings", onClick: () => import("@capacitor/app").then(({ App }) => App.openAppSettings()) },
+                  action: { label: "Open Settings", onClick: () => NativeSettings.open({ optionAndroid: AndroidSettings.ApplicationDetails, optionIOS: IOSSettings.App }) },
                 });
                 setTimeout(() => setToast(null), 5000);
               }
@@ -4524,7 +4525,7 @@ function SettingsScreen({ gender, setGender, userProfile, setUserProfile, onClos
               if (r.permission === "denied") {
                 setToast({
                   message: "Notifications not authorized",
-                  action: { label: "Open Settings", onClick: () => import("@capacitor/app").then(({ App }) => App.openAppSettings()) },
+                  action: { label: "Open Settings", onClick: () => NativeSettings.open({ optionAndroid: AndroidSettings.ApplicationDetails, optionIOS: IOSSettings.App }) },
                 });
                 setTimeout(() => setToast(null), 5000);
               }
@@ -4539,7 +4540,7 @@ function SettingsScreen({ gender, setGender, userProfile, setUserProfile, onClos
           )}
           {notif.permission === "denied" && (
             <p
-              onClick={() => import("@capacitor/app").then(({ App }) => App.openAppSettings())}
+              onClick={() => NativeSettings.open({ optionAndroid: AndroidSettings.ApplicationDetails, optionIOS: IOSSettings.App })}
               style={{ color: T.terra, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: 0, cursor: "pointer", textDecoration: "underline" }}
             >
               ⚠ Notifications are disabled on this device. Tap to open System Settings.
