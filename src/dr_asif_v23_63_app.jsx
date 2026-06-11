@@ -4446,112 +4446,6 @@ function SettingsScreen({ gender, setGender, userProfile, setUserProfile, onClos
         <LogoFull />
       </div>
 
-      {/* ── NOTIFICATIONS ──────────────────────────────────────────────────── */}
-      <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", margin: "0 0 10px" }}>Notifications</p>
-
-      <Card style={{ marginBottom: 12 }}>
-        {/* Food Reminder row */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 4px", borderBottom: `1px solid ${T.border}` }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ color: T.navy, fontSize: 13, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, margin: 0 }}>🍽 Food Reminder</p>
-            <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: "2px 0 0" }}>Daily reminder to log your meals</p>
-          </div>
-          <input
-            type="time"
-            value={`${String(notif.settings.food.hour).padStart(2, "0")}:${String(notif.settings.food.minute).padStart(2, "0")}`}
-            onChange={e => {
-              const [h, m] = e.target.value.split(":").map(Number);
-              notif.setFood({ hour: h, minute: m });
-            }}
-            disabled={!notif.settings.food.enabled}
-            style={{ border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 8px", fontFamily: "'DM Sans',sans-serif", fontSize: 13, color: T.navy, background: notif.settings.food.enabled ? T.surface : T.surfaceAlt, marginRight: 10 }}
-          />
-          <Switch
-            on={notif.settings.food.enabled}
-            onClick={async () => {
-              const r = await notif.toggleFromUi("food");
-              if (r.permission === "denied") {
-                setToast({
-                  message: "Notifications not authorized",
-                  action: { label: "Open Settings", onClick: () => NativeSettings.open({ optionAndroid: AndroidSettings.ApplicationDetails, optionIOS: IOSSettings.App }) },
-                });
-                setTimeout(() => setToast(null), 5000);
-              }
-            }}
-          />
-        </div>
-
-        {/* Exercise Reminder row */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 4px", borderBottom: `1px solid ${T.border}` }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ color: T.navy, fontSize: 13, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, margin: 0 }}>🔥 Exercise Reminder</p>
-            <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: "2px 0 0" }}>Daily reminder to log your exercise</p>
-          </div>
-          <input
-            type="time"
-            value={`${String(notif.settings.exercise.hour).padStart(2, "0")}:${String(notif.settings.exercise.minute).padStart(2, "0")}`}
-            onChange={e => {
-              const [h, m] = e.target.value.split(":").map(Number);
-              notif.setExercise({ hour: h, minute: m });
-            }}
-            disabled={!notif.settings.exercise.enabled}
-            style={{ border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 8px", fontFamily: "'DM Sans',sans-serif", fontSize: 13, color: T.navy, background: notif.settings.exercise.enabled ? T.surface : T.surfaceAlt, marginRight: 10 }}
-          />
-          <Switch
-            on={notif.settings.exercise.enabled}
-            onClick={async () => {
-              const r = await notif.toggleFromUi("exercise");
-              if (r.permission === "denied") {
-                setToast({
-                  message: "Notifications not authorized",
-                  action: { label: "Open Settings", onClick: () => NativeSettings.open({ optionAndroid: AndroidSettings.ApplicationDetails, optionIOS: IOSSettings.App }) },
-                });
-                setTimeout(() => setToast(null), 5000);
-              }
-            }}
-          />
-        </div>
-
-        {/* Challenge Milestones row */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 4px" }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ color: T.navy, fontSize: 13, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, margin: 0 }}>🏆 Challenge Milestones</p>
-            <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: "2px 0 0" }}>Celebrate streak, goal, and phase wins</p>
-          </div>
-          <Switch
-            on={notif.settings.challenge.enabled}
-            onClick={async () => {
-              const r = await notif.toggleFromUi("challenge");
-              if (r.permission === "denied") {
-                setToast({
-                  message: "Notifications not authorized",
-                  action: { label: "Open Settings", onClick: () => NativeSettings.open({ optionAndroid: AndroidSettings.ApplicationDetails, optionIOS: IOSSettings.App }) },
-                });
-                setTimeout(() => setToast(null), 5000);
-              }
-            }}
-          />
-        </div>
-
-        {/* Permission status footer */}
-        <div style={{ borderTop: `1px solid ${T.border}`, padding: "10px 4px 2px", marginTop: 4 }}>
-          {notif.permission === "granted" && (
-            <p style={{ color: T.sage, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: 0 }}>✓ Notifications are enabled</p>
-          )}
-          {notif.permission === "denied" && (
-            <p
-              onClick={() => NativeSettings.open({ optionAndroid: AndroidSettings.ApplicationDetails, optionIOS: IOSSettings.App })}
-              style={{ color: T.terra, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: 0, cursor: "pointer", textDecoration: "underline" }}
-            >
-              ⚠ Notifications are disabled on this device. Tap to open System Settings.
-            </p>
-          )}
-          {notif.permission === "prompt" && (
-            <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: 0 }}>Notification permission not yet requested — toggle one on above to enable.</p>
-          )}
-        </div>
-      </Card>
-
       {/* ── PLAN MANAGEMENT — the key section ── */}
       <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", margin: "0 0 10px" }}>Your Plan</p>
 
@@ -4690,6 +4584,112 @@ function SettingsScreen({ gender, setGender, userProfile, setUserProfile, onClos
             />
           </div>
         )}
+      </Card>
+
+      {/* ── NOTIFICATIONS ──────────────────────────────────────────────────── */}
+      <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", margin: "0 0 10px" }}>Notifications</p>
+
+      <Card style={{ marginBottom: 12 }}>
+        {/* Food Reminder row */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 4px", borderBottom: `1px solid ${T.border}` }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ color: T.navy, fontSize: 13, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, margin: 0 }}>🍽 Food Reminder</p>
+            <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: "2px 0 0" }}>Daily reminder to log your meals</p>
+          </div>
+          <input
+            type="time"
+            value={`${String(notif.settings.food.hour).padStart(2, "0")}:${String(notif.settings.food.minute).padStart(2, "0")}`}
+            onChange={e => {
+              const [h, m] = e.target.value.split(":").map(Number);
+              notif.setFood({ hour: h, minute: m });
+            }}
+            disabled={!notif.settings.food.enabled}
+            style={{ border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 8px", fontFamily: "'DM Sans',sans-serif", fontSize: 13, color: T.navy, background: notif.settings.food.enabled ? T.surface : T.surfaceAlt, marginRight: 10 }}
+          />
+          <Switch
+            on={notif.settings.food.enabled}
+            onClick={async () => {
+              const r = await notif.toggleFromUi("food");
+              if (r.permission === "denied") {
+                setToast({
+                  message: "Notifications not authorized",
+                  action: { label: "Open Settings", onClick: () => NativeSettings.open({ optionAndroid: AndroidSettings.ApplicationDetails, optionIOS: IOSSettings.App }) },
+                });
+                setTimeout(() => setToast(null), 5000);
+              }
+            }}
+          />
+        </div>
+
+        {/* Exercise Reminder row */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 4px", borderBottom: `1px solid ${T.border}` }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ color: T.navy, fontSize: 13, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, margin: 0 }}>🔥 Exercise Reminder</p>
+            <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: "2px 0 0" }}>Daily reminder to log your exercise</p>
+          </div>
+          <input
+            type="time"
+            value={`${String(notif.settings.exercise.hour).padStart(2, "0")}:${String(notif.settings.exercise.minute).padStart(2, "0")}`}
+            onChange={e => {
+              const [h, m] = e.target.value.split(":").map(Number);
+              notif.setExercise({ hour: h, minute: m });
+            }}
+            disabled={!notif.settings.exercise.enabled}
+            style={{ border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 8px", fontFamily: "'DM Sans',sans-serif", fontSize: 13, color: T.navy, background: notif.settings.exercise.enabled ? T.surface : T.surfaceAlt, marginRight: 10 }}
+          />
+          <Switch
+            on={notif.settings.exercise.enabled}
+            onClick={async () => {
+              const r = await notif.toggleFromUi("exercise");
+              if (r.permission === "denied") {
+                setToast({
+                  message: "Notifications not authorized",
+                  action: { label: "Open Settings", onClick: () => NativeSettings.open({ optionAndroid: AndroidSettings.ApplicationDetails, optionIOS: IOSSettings.App }) },
+                });
+                setTimeout(() => setToast(null), 5000);
+              }
+            }}
+          />
+        </div>
+
+        {/* Challenge Milestones row */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 4px" }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ color: T.navy, fontSize: 13, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, margin: 0 }}>🏆 Challenge Milestones</p>
+            <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: "2px 0 0" }}>Celebrate streak, goal, and phase wins</p>
+          </div>
+          <Switch
+            on={notif.settings.challenge.enabled}
+            onClick={async () => {
+              const r = await notif.toggleFromUi("challenge");
+              if (r.permission === "denied") {
+                setToast({
+                  message: "Notifications not authorized",
+                  action: { label: "Open Settings", onClick: () => NativeSettings.open({ optionAndroid: AndroidSettings.ApplicationDetails, optionIOS: IOSSettings.App }) },
+                });
+                setTimeout(() => setToast(null), 5000);
+              }
+            }}
+          />
+        </div>
+
+        {/* Permission status footer */}
+        <div style={{ borderTop: `1px solid ${T.border}`, padding: "10px 4px 2px", marginTop: 4 }}>
+          {notif.permission === "granted" && (
+            <p style={{ color: T.sage, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: 0 }}>✓ Notifications are enabled</p>
+          )}
+          {notif.permission === "denied" && (
+            <p
+              onClick={() => NativeSettings.open({ optionAndroid: AndroidSettings.ApplicationDetails, optionIOS: IOSSettings.App })}
+              style={{ color: T.terra, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: 0, cursor: "pointer", textDecoration: "underline" }}
+            >
+              ⚠ Notifications are disabled on this device. Tap to open System Settings.
+            </p>
+          )}
+          {notif.permission === "prompt" && (
+            <p style={{ color: T.light, fontSize: 11, fontFamily: "'DM Sans',sans-serif", margin: 0 }}>Notification permission not yet requested — toggle one on above to enable.</p>
+          )}
+        </div>
       </Card>
 
       {/* About */}
@@ -4945,10 +4945,10 @@ export default function App() {
   const resetAllData = async () => {
     setShowSettings(false);
     // 1. Delete the user account on the server.
-    try { await apiDelete("/api/me"); } catch {}
+    try { await apiDelete("/api/me"); } catch { }
     // 2. Revoke all refresh tokens. Access token is still cryptographically
     //    valid here, so this 200s even though the user row is gone.
-    try { await logout({ all: true }); } catch {}
+    try { await logout({ all: true }); } catch { }
     // 3. Clear every local dr_* + auth_* key EXCEPT the local-only
     //    "have we already asked for notification permission?" flag,
     //    which must survive a data reset (per feature spec).
@@ -4960,9 +4960,9 @@ export default function App() {
         )
         .forEach(k => localStorage.removeItem(k));
       clearSession();
-    } catch {}
+    } catch { }
     // 4. Cancel all scheduled notifications and reset notification settings
-    try { await notif.reset(); } catch {}
+    try { await notif.reset(); } catch { }
     // 5. Reset every live React state variable so nothing is re-persisted
     setFoodLog([]);
     setExLog([]);
