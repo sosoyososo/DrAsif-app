@@ -4815,10 +4815,15 @@ export default function App() {
     // 2. Revoke all refresh tokens. Access token is still cryptographically
     //    valid here, so this 200s even though the user row is gone.
     try { await logout({ all: true }); } catch {}
-    // 3. Clear every local dr_* + auth_* key
+    // 3. Clear every local dr_* + auth_* key EXCEPT the local-only
+    //    "have we already asked for notification permission?" flag,
+    //    which must survive a data reset (per feature spec).
     try {
       Object.keys(localStorage)
-        .filter(k => k.startsWith("dr_") || k.startsWith("auth_"))
+        .filter(k =>
+          (k.startsWith("dr_") || k.startsWith("auth_")) &&
+          k !== "dr_notif_permission_asked"
+        )
         .forEach(k => localStorage.removeItem(k));
       clearSession();
     } catch {}
