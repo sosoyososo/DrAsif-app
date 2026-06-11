@@ -5,6 +5,7 @@ import { StorageService } from "./services/storage.js";
 import { apiPost, apiGet, apiDelete, getSession, clearSession, logout } from "./services/api.js";
 import { signInWithApple } from "./services/apple-signin.js";
 import { useStoredState } from "./hooks/useStoredState.js";
+import { useNotifications } from "./hooks/useNotifications.js";
 
 // ─── Design Tokens — Posh Medical Palette ─────────────────────────────────────
 // Primary: deep navy/slate · Accent: refined teal · Warm: off-white ivory
@@ -4773,6 +4774,11 @@ export default function App() {
   useEffect(() => { if (showSettings) setShowSettings(false); }, [active]);
   useEffect(() => { if (showMore) setShowMore(false); }, [active]);
 
+  // ── Local notifications ────────────────────────────────────────────────────
+  const notif = useNotifications({
+    onTap: (tabId) => setActive(tabId),
+  });
+
   // ── Boot probe: verify stored session with /api/me. If the access token
   //    has expired, apiGet transparently calls /api/refresh first. Only if
   //    that also fails do we drop back to "unauthenticated".
@@ -4816,7 +4822,9 @@ export default function App() {
         .forEach(k => localStorage.removeItem(k));
       clearSession();
     } catch {}
-    // 4. Reset every live React state variable so nothing is re-persisted
+    // 4. Cancel all scheduled notifications and reset notification settings
+    try { await notif.reset(); } catch {}
+    // 5. Reset every live React state variable so nothing is re-persisted
     setFoodLog([]);
     setExLog([]);
     setDailyLogs({});
@@ -4827,7 +4835,7 @@ export default function App() {
     setStreakDays(Array(7).fill(false));
     setUserProfile(null);
     setActive("home");
-    // 5. Reset gender LAST → returns user to onboarding, guaranteeing a clean slate
+    // 6. Reset gender LAST → returns user to onboarding, guaranteeing a clean slate
     setGender(null);
     setAuthPhase("unauthenticated");
   };
