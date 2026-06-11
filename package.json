@@ -27,6 +27,7 @@
     "@capacitor/cli": "^7.6.5",
     "@capacitor/core": "^7.6.5",
     "@capacitor/ios": "^7.6.5",
+    "@capacitor/local-notifications": "^7.0.6",
     "@capacitor/splash-screen": "^7.0.5",
     "@capacitor/status-bar": "^7.0.6",
     "capacitor-plugin-safe-area": "^4.0.3",
