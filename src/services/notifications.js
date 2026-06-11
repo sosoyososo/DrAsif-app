@@ -122,11 +122,16 @@ export const NotificationService = {
           challenge: { enabled: true },
         };
         writeSettings(updated);
+      }
+      // Self-heal: ensure OS schedules exist for any enabled daily reminder.
+      // Covers: fresh install + first grant; reinstall where settings were
+      // restored from the server but OS schedules were cleared on uninstall.
+      const finalSettings = readSettings();
+      if (finalSettings.food.enabled || finalSettings.exercise.enabled) {
         try {
-          await scheduleDaily(NOTIFICATION_IDS.FOOD, NOTIFICATION_CONTENT.food, "food", updated.food.hour, updated.food.minute);
-          await scheduleDaily(NOTIFICATION_IDS.EXERCISE, NOTIFICATION_CONTENT.exercise, "exercise", updated.exercise.hour, updated.exercise.minute);
+          await NotificationService.updateSettings(finalSettings);
         } catch (e) {
-          console.warn("NotificationService.requestPermission initial schedule failed:", e);
+          console.warn("NotificationService.requestPermission reschedule failed:", e);
         }
       }
     }

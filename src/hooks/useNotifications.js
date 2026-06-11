@@ -18,8 +18,18 @@ export function useNotifications({ onTap }) {
       if (before === "prompt") {
         const result = await NotificationService.requestPermission();
         setPermission(result);
-        if (result === "granted") {
-          setSettings(NotificationService.getSettings());
+      }
+      // Self-heal: if permission is granted and any daily reminder is enabled,
+      // ensure the OS has the schedules. Covers cold-start after reinstall
+      // (where iOS may have kept the grant or the user just re-granted) and
+      // any other case where localStorage has settings but OS schedules are
+      // missing or out of sync.
+      const after = await NotificationService.checkPermission();
+      if (after === "granted") {
+        const s = NotificationService.getSettings();
+        setSettings(s);
+        if (s.food.enabled || s.exercise.enabled) {
+          await NotificationService.updateSettings(s);
         }
       }
     })();
