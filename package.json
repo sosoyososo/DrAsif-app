@@ -30,6 +30,7 @@
     "@capacitor/local-notifications": "^7.0.6",
     "@capacitor/splash-screen": "^7.0.5",
     "@capacitor/status-bar": "^7.0.6",
+    "capacitor-native-settings": "^7.0.2",
     "capacitor-plugin-safe-area": "^4.0.3",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
