@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { App as CapApp } from "@capacitor/app";
 import { NotificationService } from "../services/notifications";
+import { StorageService } from "../services/storage";
 
 export function useNotifications({ onTap }) {
   const [settings, setSettings] = useState(() => NotificationService.getSettings());
@@ -34,6 +35,29 @@ export function useNotifications({ onTap }) {
       }
     })();
   }, [onTap]);
+
+  // Server sync (e.g., importAll after sign-in): re-read settings and self-heal.
+  // The hook's `settings` state initializes once at mount; without this
+  // subscription, settings restored from the server AFTER mount would be
+  // invisible to the hook, and OS schedules would not be recreated.
+  useEffect(() => {
+    const unsubscribe = StorageService.subscribe(() => {
+      (async () => {
+        const s = NotificationService.getSettings();
+        setSettings(s);
+        const perm = await NotificationService.checkPermission();
+        setPermission(perm);
+        if (perm === "granted" && (s.food.enabled || s.exercise.enabled)) {
+          try {
+            await NotificationService.updateSettings(s);
+          } catch (e) {
+            console.warn("useNotifications StorageService sync reschedule failed:", e);
+          }
+        }
+      })();
+    });
+    return unsubscribe;
+  }, []);
 
   // App focus: re-check permission + flush pending schedules if newly granted
   useEffect(() => {
