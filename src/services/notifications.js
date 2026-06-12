@@ -33,9 +33,9 @@ export const NOTIFICATION_TAB = {
 };
 
 export const DEFAULT_SETTINGS = {
-  food: { enabled: false, hour: 9, minute: 0 },
-  exercise: { enabled: false, hour: 18, minute: 0 },
-  challenge: { enabled: false },
+  food: { enabled: true, hour: 9, minute: 0 },
+  exercise: { enabled: true, hour: 18, minute: 0 },
+  challenge: { enabled: true },
 };
 
 const STORAGE_KEY = "dr_notif_settings";
@@ -122,20 +122,6 @@ export const NotificationService = {
     }
     markAsked();
     if (result.display === "granted") {
-      const current = readSettings();
-      const isFirstGrant =
-        !current.food.enabled && !current.exercise.enabled && !current.challenge.enabled;
-      if (isFirstGrant) {
-        const updated = {
-          food: { ...DEFAULT_SETTINGS.food, enabled: true },
-          exercise: { ...DEFAULT_SETTINGS.exercise, enabled: true },
-          challenge: { enabled: true },
-        };
-        writeSettings(updated);
-      }
-      // Self-heal: ensure OS schedules exist for any enabled daily reminder.
-      // Covers: fresh install + first grant; reinstall where settings were
-      // restored from the server but OS schedules were cleared on uninstall.
       const finalSettings = readSettings();
       if (finalSettings.food.enabled || finalSettings.exercise.enabled) {
         try {
@@ -228,7 +214,7 @@ export const NotificationService = {
     writeSettings({
       food: { ...DEFAULT_SETTINGS.food },
       exercise: { ...DEFAULT_SETTINGS.exercise },
-      challenge: { enabled: false },
+      challenge: { ...DEFAULT_SETTINGS.challenge },
     });
   },
 };
