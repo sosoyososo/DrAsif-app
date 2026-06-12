@@ -1419,7 +1419,7 @@ function Phase2Recalc({ gender, userProfile, onConfirm }) {
   );
 }
 
-function ChallengeTab({ plan, gender, foodLog, exLog, phase, setPhase, startDate, setStartDate, started, setStarted, dailyLogs, setDailyLogs, progressLog, setProgressLog, userProfile, setUserProfile }) {
+function ChallengeTab({ plan, gender, foodLog, exLog, phase, setPhase, startDate, setStartDate, started, setStarted, dailyLogs, setDailyLogs, progressLog, setProgressLog, userProfile, setUserProfile, triggerMilestone }) {
 
   const cfg = PHASE_CONFIG[phase];
   const todayKey = new Date().toISOString().split("T")[0];
@@ -1485,11 +1485,33 @@ function ChallengeTab({ plan, gender, foodLog, exLog, phase, setPhase, startDate
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(""), 2800); };
 
+  // ── Milestone notifications ──────────────────────────────────────────────
+  const MILESTONE_SENT_KEY = "dr_milestones_sent";
+
+  const readMilestonesSent = () => {
+    try { return JSON.parse(localStorage.getItem(MILESTONE_SENT_KEY) || "{}"); } catch { return {}; }
+  };
+
+  const prevAllDoneRef = useRef(allDoneToday);
+  useEffect(() => {
+    if (allDoneToday && !prevAllDoneRef.current) {
+      const sent = readMilestonesSent();
+      const mk = `${phase}.${daysElapsed}`;
+      if (!sent[mk]) {
+        triggerMilestone({ phase, day: daysElapsed });
+        sent[mk] = true;
+        try { localStorage.setItem(MILESTONE_SENT_KEY, JSON.stringify(sent)); } catch {}
+      }
+    }
+    prevAllDoneRef.current = allDoneToday;
+  }, [allDoneToday, daysElapsed, phase, triggerMilestone]);
+
   const startChallenge = () => {
     setStartDate(todayKey);
     setStarted(true);
     setDailyLogs({});
     setProgressLog([]);
+    try { localStorage.removeItem(MILESTONE_SENT_KEY); } catch {}
     showToast(`🌱 ${cfg.label} started! Day 1 of ${cfg.days}. You've got this!`);
   };
 
@@ -5037,7 +5059,8 @@ export default function App() {
         started={challengeStarted} setStarted={setChallengeStarted}
         dailyLogs={dailyLogs} setDailyLogs={setDailyLogs}
         progressLog={progressLog} setProgressLog={setProgressLog}
-        userProfile={userProfile} setUserProfile={setUserProfile} />;
+        userProfile={userProfile} setUserProfile={setUserProfile}
+        triggerMilestone={notif.triggerMilestone} />;
       case "food": return <FoodGuideTab plan={plan} gender={gender} foodLog={foodLog} setFoodLog={setFoodLog} dailyLogs={dailyLogs} setDailyLogs={setDailyLogs} />;
       case "calories": return <CaloriesTab plan={plan} gender={gender}
         foodLog={foodLog} setFoodLog={setFoodLog}

@@ -13,7 +13,17 @@ export const NOTIFICATION_IDS = {
 export const NOTIFICATION_CONTENT = {
   food: { title: "Log your meals", body: "Don't forget today's meal log." },
   exercise: { title: "Time to move", body: "Don't forget today's exercise." },
-  challenge: { title: "🎉 Congratulations!", body: "You've reached a new milestone! Keep it up." },
+  challenge: {
+    default: { title: "🎉 Congratulations!", body: "You've reached a new milestone! Keep it up." },
+    milestones: {
+      week3: {
+        7:  { title: "One week down!",   body: "One week in. Your body is adjusting. Keep going." },
+        14: { title: "Halfway there!",   body: "Halfway. Most people feel the change around now." },
+        18: { title: "Almost there!",    body: "3 days left of your free trial. Your autopilot is almost on." },
+        20: { title: "One day to go!",   body: "Tomorrow is Day 21. You are about to complete something most people never do." },
+      },
+    },
+  },
 };
 
 export const NOTIFICATION_TAB = {
@@ -170,23 +180,29 @@ export const NotificationService = {
     }
   },
 
-  // Imperative trigger for challenge milestones (wired up later)
-  async triggerMilestone({ body } = {}) {
+  // Imperative trigger for challenge milestones
+  async triggerMilestone({ phase, day, title, body } = {}) {
     if (!isNative()) return;
     const settings = readSettings();
     if (!settings.challenge.enabled) return;
     const perm = await NotificationService.checkPermission();
     if (perm !== "granted") return;
+
+    const phaseMilestones = NOTIFICATION_CONTENT.challenge.milestones[phase];
+    const milestone = phaseMilestones?.[day];
+    if (!milestone && !title && !body) return; // no milestone + no override → silent skip
+    const content = milestone || NOTIFICATION_CONTENT.challenge.default;
+
     const id = NOTIFICATION_IDS.MILESTONE_BASE + (Date.now() % 1_000_000);
     try {
       await LocalNotifications.schedule({
         notifications: [
           {
             id,
-            title: NOTIFICATION_CONTENT.challenge.title,
-            body: body || NOTIFICATION_CONTENT.challenge.body,
+            title: title || content.title,
+            body: body || content.body,
             schedule: { at: new Date(Date.now() + 1000) },
-            extra: { type: "challenge" },
+            extra: { type: "challenge", phase, day },
           },
         ],
       });
